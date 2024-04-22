@@ -8,7 +8,6 @@ import (
 	"src/model"
 )
 
-// Translate 方法用于向 deeplx API 发送翻译请求并返回翻译结果
 func Translate(translateReq model.TranslateRequest) (string, error) {
 
 	// 将请求体转换为 JSON
@@ -31,11 +30,15 @@ func Translate(translateReq model.TranslateRequest) (string, error) {
 	}
 
 	// 解析 API 响应
-	var translateRes model.TranslateResponse
+	var translateRes map[string]interface{}
 	if err := json.Unmarshal(responseData, &translateRes); err != nil {
 		return "", err
 	}
 
 	// 返回翻译结果
-	return translateRes.Translation, nil
+	if translation, ok := translateRes["data"].(string); ok {
+		return translation, nil
+	} else {
+		return "", nil
+	}
 }
