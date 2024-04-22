@@ -11,7 +11,7 @@ func main() {
 	r := gin.Default()
 
 	// 设置路由
-	r.POST("/translate", controller.TranslateHandler)
+	r.GET("/translate", controller.TranslateHandler)
 
 	// 启动服务器
 	r.Run(":8080")
