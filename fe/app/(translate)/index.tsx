@@ -1,12 +1,16 @@
-import HeaderContainer from '@/components/global/HeaderContainer';
-import React from 'react';
-import { Text, View } from 'react-native';
+import HeaderContainer from "@/components/global/HeaderContainer";
+import IconBtn from "@/components/global/IconBtn";
+import { MaterialIcons } from "@expo/vector-icons";
+import React from "react";
+import { View } from "react-native";
 
 export default function Index() {
   return (
     <View className="flex">
       <HeaderContainer>
-        <Text>能看到我吗？</Text>
+        <IconBtn onPress={() => console.log("back")}>
+          <MaterialIcons name="arrow-back-ios" size={24} color="white" />
+        </IconBtn>
       </HeaderContainer>
     </View>
   );

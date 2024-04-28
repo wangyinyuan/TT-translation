@@ -8,7 +8,7 @@ import "../global.css";
 
 export {
   // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
+  ErrorBoundary
 } from "expo-router";
 
 const customTheme = vars({
@@ -26,8 +26,8 @@ export default function RootLayout() {
     <PaperProvider>
       <View style={customTheme} className="h-full w-full">
         <RootLayoutNav />
-        <StatusBar style="auto" />
       </View>
+      <StatusBar style="auto" />
     </PaperProvider>
   );
 }
