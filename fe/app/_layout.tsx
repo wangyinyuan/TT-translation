@@ -27,7 +27,7 @@ export default function RootLayout() {
       <View style={customTheme} className="h-full w-full">
         <RootLayoutNav />
       </View>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
     </PaperProvider>
   );
 }
