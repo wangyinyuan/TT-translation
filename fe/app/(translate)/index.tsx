@@ -1,11 +1,17 @@
-import React from 'react';
-import { Text, View } from 'react-native';
+import HeaderContainer from "@/components/global/HeaderContainer";
+import IconBtn from "@/components/global/IconBtn";
+import { MaterialIcons } from "@expo/vector-icons";
+import React from "react";
+import { View } from "react-native";
 
 export default function Index() {
   return (
-    <View className="flex justify-center ml-8 mt-[100px]">
-      <Text className='text-red-400'>Open up App.tsx to start working on your app!</Text>
-      <Text>Hello World!!!</Text>
+    <View className="flex">
+      <HeaderContainer>
+        <IconBtn onPress={() => console.log("back")}>
+          <MaterialIcons name="arrow-back-ios" size={24} color="white" />
+        </IconBtn>
+      </HeaderContainer>
     </View>
   );
 }
