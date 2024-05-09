@@ -7,8 +7,8 @@ interface LangPickerModalProps {
 
 export default function LangPickerModal({ ...props }: LangPickerModalProps) {
   return (
-    <Modal {...props} backdropOpacity={0.3} className="flex w-full">
-      <ScrollView className="bg-white w-full">
+    <Modal {...props} backdropOpacity={0.3} className="flex w-full" style={styles.modal}>
+      <ScrollView className="bg-white w-full h-full">
         <Text>I am the modal content!</Text>
       </ScrollView>
     </Modal>
@@ -17,12 +17,6 @@ export default function LangPickerModal({ ...props }: LangPickerModalProps) {
 
 const styles = StyleSheet.create({
   modal: {
-    flex: 1,
-    position: "absolute",
-    justifyContent: "center",
-    width: "100%",
-    height: '60%',
-    bottom: 0,
-    left: 0,
+    margin: 0,
   }
 })
