@@ -12,7 +12,7 @@ func main() {
 
 	// 设置路由
 	r.GET("/translate", controller.TranslateHandler)
-
+	r.POST("/speechTranslate", controller.SpeechTranslateHandler)
 	// 启动服务器
 	r.Run(":8080")
 }
