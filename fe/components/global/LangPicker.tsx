@@ -29,6 +29,10 @@ export default function LangPicker() {
     setIsModalVisible(!isModalVisible);
   }
 
+  function handleModalClose() {
+    setIsModalVisible(false);
+  }
+
   return (
     <View className="flex flex-row items-center justify-around shrink w-full">
       <Button
@@ -48,9 +52,7 @@ export default function LangPicker() {
         onPress={toggleModal}>
         {langLabels[langs.to]}
       </Button>
-      <LangPickerModal isVisible={isModalVisible} onBackdropPress={() => {
-        setIsModalVisible(false);
-      }} />
+      <LangPickerModal isVisible={isModalVisible} onBackdropPress={handleModalClose} onSwipeComplete={handleModalClose} />
     </View>
   );
 }
