@@ -1,3 +1,4 @@
+import DropBar from "@/components/global/DropBar";
 import { radiusBase } from "@/styles/base";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import Modal from "react-native-modal";
@@ -14,6 +15,7 @@ export default function LangPickerModal({ ...props }: LangPickerModalProps) {
       className="flex-1 w-full"
       style={styles.modal}>
       <View className="bg-white h-3/5 absolute bottom-0 w-full" style={[styles.radius]}>
+        <DropBar />
         <ScrollView className="w-full flex-1" style={styles.radius} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
           <Text className="text-9xl">I am the modal content! Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolore, autem earum! At vero similique animi! Eum error optio, mollitia natus quas placeat deleniti a autem delectus sunt blanditiis odio voluptate.</Text>
         </ScrollView>
