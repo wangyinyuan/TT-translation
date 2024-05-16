@@ -18,5 +18,5 @@ export default function LangPickerModal({ ...props }: LangPickerModalProps) {
 const styles = StyleSheet.create({
   modal: {
     margin: 0,
-  }
-})
+  },
+});
