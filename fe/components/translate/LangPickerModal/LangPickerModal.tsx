@@ -106,7 +106,7 @@ export default function LangPickerModal({ ...props }: LangPickerModalProps) {
               Recent languages
             </List.Subheader>
             <View style={styles.langOptionsContainer}>
-              <LangOption />
+              <LangOption isSelected={true} title="英语" />
             </View>
           </List.Section>
           <List.Section>
@@ -114,7 +114,7 @@ export default function LangPickerModal({ ...props }: LangPickerModalProps) {
               All languages
             </List.Subheader>
             <View style={styles.langOptionsContainer}>
-              <LangOption />
+              <LangOption title="阿拉伯语" />
             </View>
           </List.Section>
         </ScrollView>

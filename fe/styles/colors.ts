@@ -1,5 +1,7 @@
 export const bg = {
   gray_100: "#F5F6FA",
+  gray_200: "#e5e7eb",
+  gray_400: "#d1d5db",
   white: "#fff",
 };
 
@@ -7,4 +9,5 @@ export const text = {
   gray_500: "#BCBDD1",
   gray_600: "#9B9CB8",
   gray_950: "#020617",
+  green_500: "#66BCCC",
 };
