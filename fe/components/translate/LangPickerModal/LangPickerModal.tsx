@@ -47,7 +47,10 @@ export default function LangPickerModal({ ...props }: LangPickerModalProps) {
 
   function handleScrollTo(p: any) {
     if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo(p);
+      scrollViewRef.current.scrollTo({
+        ...p,
+        animated: true,
+      });
     }
   }
 
