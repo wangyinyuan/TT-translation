@@ -6,6 +6,7 @@ interface LangOptionProps {
   isSelected?: boolean;
   onPress?: () => void;
   title: string;
+  isLast?: boolean;
 }
 
 const dividerTheme = {
@@ -18,7 +19,7 @@ function CheckIcon() {
   return <List.Icon icon="check" color={text.green_500} />;
 }
 
-export default function LangOption({ isSelected = false, onPress, title }: LangOptionProps) {
+export default function LangOption({ isSelected = false, isLast = false, onPress, title }: LangOptionProps) {
   return (
     <>
       <List.Item
@@ -31,11 +32,11 @@ export default function LangOption({ isSelected = false, onPress, title }: LangO
           styles.title,
           isSelected ? { color: text.green_500 } : {},
         ]}></List.Item>
-      <Divider
+      { !isLast && <Divider
         theme={dividerTheme}
         style={styles.divider}
         horizontalInset={true}
-      />
+      />}
     </>
   );
 }

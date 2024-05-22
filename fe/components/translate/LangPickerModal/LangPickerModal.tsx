@@ -10,7 +10,7 @@ import {
   NativeSyntheticEvent,
   ScrollView,
   StyleSheet,
-  View
+  View,
 } from "react-native";
 import Modal from "react-native-modal";
 import { List, Searchbar } from "react-native-paper";
@@ -32,7 +32,11 @@ const searchBarTheme = {
   },
 };
 
-export default function LangPickerModal({ onLangChange, recentLangs, ...props}: LangPickerModalProps) {
+export default function LangPickerModal({
+  onLangChange,
+  recentLangs,
+  ...props
+}: LangPickerModalProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [scrollOffset, setScrollOffset] = useState(0);
   const [scrollOffsetMax, setScrollOffsetMax] = useState(0);
@@ -41,16 +45,33 @@ export default function LangPickerModal({ onLangChange, recentLangs, ...props}: 
   const scrollViewRef = useRef<ScrollView | null>(null);
 
   const allLangOptions = () => {
-    return langOptions.map((lang: LangsValue) => {
-      return <LangOption key={lang} title={langLabels[lang]} onPress={() => handleLangChange(lang)} />;
-    })
-  }
+    const last = langOptions.length - 1;
+    return langOptions.map((lang: LangsValue, index: number) => {
+      return (
+        <LangOption
+          key={lang}
+          isLast={index === last ? true : false}
+          title={langLabels[lang]}
+          onPress={() => handleLangChange(lang)}
+        />
+      );
+    });
+  };
 
   const recLangOptions = () => {
-    return recentLangs?.map((lang: LangsValue) => {
-      return <LangOption key={lang} title={langLabels[lang]} onPress={() => handleLangChange(lang)} />;
-    })
-  }
+    if (!recentLangs) return null;
+    const last = recentLangs?.length - 1;
+    return recentLangs?.map((lang: LangsValue, index: number) => {
+      return (
+        <LangOption
+          key={lang}
+          isLast={index === last ? true : false}
+          title={langLabels[lang]}
+          onPress={() => handleLangChange(lang)}
+        />
+      );
+    });
+  };
 
   function handleSearch(query: string) {
     setSearchQuery(query);
@@ -79,7 +100,7 @@ export default function LangPickerModal({ onLangChange, recentLangs, ...props}: 
     setScrollViewHeight(height);
   }
 
-  function handleLangChange(lang: LangsValue | 'auto') {
+  function handleLangChange(lang: LangsValue | "auto") {
     console.log("语言变成", lang);
   }
 
@@ -98,8 +119,7 @@ export default function LangPickerModal({ onLangChange, recentLangs, ...props}: 
       onSwipeComplete={props.onSwipeComplete}
       scrollTo={handleScrollTo}
       scrollOffset={scrollOffset}
-      scrollOffsetMax={scrollOffsetMax}
-      >
+      scrollOffsetMax={scrollOffsetMax}>
       <View
         className="h-3/5 absolute bottom-0 w-full"
         style={[styles.radius, styles.container]}>
@@ -125,17 +145,13 @@ export default function LangPickerModal({ onLangChange, recentLangs, ...props}: 
             <List.Subheader style={styles.subHeader}>
               Recent languages
             </List.Subheader>
-            <View style={styles.langOptionsContainer}>
-              {recLangOptions()}
-            </View>
+            <View style={styles.langOptionsContainer}>{recLangOptions()}</View>
           </List.Section>
           <List.Section>
             <List.Subheader style={styles.subHeader}>
               All languages
             </List.Subheader>
-            <View style={styles.langOptionsContainer}>
-              {allLangOptions()}
-            </View>
+            <View style={styles.langOptionsContainer}>{allLangOptions()}</View>
           </List.Section>
         </ScrollView>
       </View>
@@ -166,7 +182,7 @@ const styles = StyleSheet.create({
     backgroundColor: bg.white,
     borderRadius: radiusSm,
     width: "100%",
-    height: 'auto',
+    height: "auto",
   },
   subHeader: {
     color: text.gray_950,
