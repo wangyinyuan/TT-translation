@@ -18,8 +18,10 @@ import LangOption from "./LangOption";
 
 interface LangPickerModalProps {
   [key: string]: any;
-  onLangChange?: (lang: LangsChoice) => void;
+  onLangChange?: (lang: LangsValue | 'auto') => void;
   recentLangs?: LangsValue[];
+  isTargetPicker: boolean;
+  curLangs: LangsChoice;
 }
 
 const searchBarTheme = {
@@ -35,6 +37,8 @@ const searchBarTheme = {
 export default function LangPickerModal({
   onLangChange,
   recentLangs,
+  isTargetPicker,
+  curLangs,
   ...props
 }: LangPickerModalProps) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,6 +46,7 @@ export default function LangPickerModal({
   const [scrollOffsetMax, setScrollOffsetMax] = useState(0);
   const [contentHeight, setContentHeight] = useState(0);
   const [scrollViewHeight, setScrollViewHeight] = useState(0);
+  const [selectedLang, setSelectedLang] = useState<LangsValue | "auto" | undefined>();
   const scrollViewRef = useRef<ScrollView | null>(null);
 
   const allLangOptions = () => {
@@ -53,6 +58,7 @@ export default function LangPickerModal({
           isLast={index === last ? true : false}
           title={langLabels[lang]}
           onPress={() => handleLangChange(lang)}
+          isSelected={isOptionSelected(lang)}
         />
       );
     });
@@ -68,10 +74,25 @@ export default function LangPickerModal({
           isLast={index === last ? true : false}
           title={langLabels[lang]}
           onPress={() => handleLangChange(lang)}
+          isSelected={isOptionSelected(lang)}
         />
       );
     });
   };
+
+  function isOptionSelected(lang: LangsValue | "auto") {
+    return lang === selectedLang;
+  }
+
+  // 初始化选中的语言
+  useEffect(() => {
+    if (isTargetPicker) {
+      setSelectedLang(curLangs.to);
+    }
+    else {
+      setSelectedLang(curLangs.from);
+    }
+  }, [isTargetPicker, curLangs.to, curLangs.from]);
 
   function handleSearch(query: string) {
     setSearchQuery(query);
@@ -101,7 +122,7 @@ export default function LangPickerModal({
   }
 
   function handleLangChange(lang: LangsValue | "auto") {
-    console.log("语言变成", lang);
+    setSelectedLang(lang);
   }
 
   useEffect(() => {
@@ -114,9 +135,9 @@ export default function LangPickerModal({
       backdropOpacity={0.3}
       className="flex-1 w-full"
       style={styles.modal}
+      onModalHide={() => onLangChange && onLangChange(selectedLang!)}
       swipeDirection={["down"]}
       propagateSwipe={true}
-      onSwipeComplete={props.onSwipeComplete}
       scrollTo={handleScrollTo}
       scrollOffset={scrollOffset}
       scrollOffsetMax={scrollOffsetMax}>

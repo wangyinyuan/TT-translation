@@ -27,7 +27,7 @@ export default function LangOption({ isSelected = false, isLast = false, onPress
         right={() => {
           return isSelected ? <CheckIcon /> : null;
         }}
-        onPress={() => console.log("LangOption was Pressed!")}
+        onPress={() => onPress && onPress()}
         titleStyle={[
           styles.title,
           isSelected ? { color: text.green_500 } : {},

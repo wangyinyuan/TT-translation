@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
 
 export default function LangPicker() {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isTarget, setIsTarget] = useState(false);
   const [langs, setLangs] = useState<LangsChoice>({
     from: "auto",
     to: "EN",
@@ -35,7 +36,8 @@ export default function LangPicker() {
     });
   };
 
-  function toggleModal() {
+  function toggleModal(isTarget: boolean) {
+    setIsTarget(isTarget);
     setIsModalVisible(!isModalVisible);
   }
 
@@ -43,20 +45,23 @@ export default function LangPicker() {
     setIsModalVisible(false);
   }
 
-  function handleLangChange(lang: LangsChoice) {
-    setLangs((prev) => {
-      return {
+  function handleLangChange(lang: LangsValue | "auto") {
+    // 改变选中的语言
+    if (isTarget) {
+      setLangs((prev) => ({
         ...prev,
-        ...lang,
-      };
-    });
-
-    if (lang.from && lang.from !== "auto") {
-      addLang(lang.from);
+        to: lang as LangsValue,
+      }));
+    } else {
+      setLangs((prev) => ({
+        ...prev,
+        from: lang,
+      }));
     }
 
-    if (lang.to) {
-      addLang(lang.to);
+    // 添加到最近使用的语言
+    if (lang !== 'auto') {
+      addLang(lang);
     }
   }
 
@@ -66,7 +71,7 @@ export default function LangPicker() {
         textColor="white"
         labelStyle={styles.labelStyle}
         contentStyle={styles.buttonStyle}
-        onPress={toggleModal}>
+        onPress={() => toggleModal(false)}>
         {langLabels[langs.from]}
       </Button>
       <IconBtn className="shrink">
@@ -76,10 +81,12 @@ export default function LangPicker() {
         textColor="white"
         labelStyle={styles.labelStyle}
         contentStyle={styles.buttonStyle}
-        onPress={toggleModal}>
+        onPress={() => toggleModal(true)}>
         {langLabels[langs.to]}
       </Button>
       <LangPickerModal
+        curLangs={langs}
+        isTargetPicker={isTarget}
         onLangChange={handleLangChange}
         recentLangs={recentLangs}
         isVisible={isModalVisible}
