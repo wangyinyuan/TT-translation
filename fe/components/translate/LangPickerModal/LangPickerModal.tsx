@@ -1,6 +1,8 @@
 import DropBar from "@/components/global/DropBar";
+import { langLabels, langOptions } from "@/constants/langs";
 import { radiusBase, radiusSm } from "@/styles/base";
 import { bg, text } from "@/styles/colors";
+import { LangsChoice, LangsValue } from "@/types/translate/lang";
 import { useEffect, useRef, useState } from "react";
 import {
   LayoutChangeEvent,
@@ -16,6 +18,8 @@ import LangOption from "./LangOption";
 
 interface LangPickerModalProps {
   [key: string]: any;
+  onLangChange?: (lang: LangsChoice) => void;
+  recentLangs?: LangsValue[];
 }
 
 const searchBarTheme = {
@@ -28,13 +32,25 @@ const searchBarTheme = {
   },
 };
 
-export default function LangPickerModal({ ...props }: LangPickerModalProps) {
+export default function LangPickerModal({ onLangChange, recentLangs, ...props}: LangPickerModalProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [scrollOffset, setScrollOffset] = useState(0);
   const [scrollOffsetMax, setScrollOffsetMax] = useState(0);
   const [contentHeight, setContentHeight] = useState(0);
   const [scrollViewHeight, setScrollViewHeight] = useState(0);
   const scrollViewRef = useRef<ScrollView | null>(null);
+
+  const allLangOptions = () => {
+    return langOptions.map((lang: LangsValue) => {
+      return <LangOption key={lang} title={langLabels[lang]} onPress={() => handleLangChange(lang)} />;
+    })
+  }
+
+  const recLangOptions = () => {
+    return recentLangs?.map((lang: LangsValue) => {
+      return <LangOption key={lang} title={langLabels[lang]} onPress={() => handleLangChange(lang)} />;
+    })
+  }
 
   function handleSearch(query: string) {
     setSearchQuery(query);
@@ -61,6 +77,10 @@ export default function LangPickerModal({ ...props }: LangPickerModalProps) {
   function handleLayout(e: LayoutChangeEvent) {
     const { height } = e.nativeEvent.layout;
     setScrollViewHeight(height);
+  }
+
+  function handleLangChange(lang: LangsValue | 'auto') {
+    console.log("语言变成", lang);
   }
 
   useEffect(() => {
@@ -106,7 +126,7 @@ export default function LangPickerModal({ ...props }: LangPickerModalProps) {
               Recent languages
             </List.Subheader>
             <View style={styles.langOptionsContainer}>
-              <LangOption isSelected={true} title="英语" />
+              {recLangOptions()}
             </View>
           </List.Section>
           <List.Section>
@@ -114,7 +134,7 @@ export default function LangPickerModal({ ...props }: LangPickerModalProps) {
               All languages
             </List.Subheader>
             <View style={styles.langOptionsContainer}>
-              <LangOption title="阿拉伯语" />
+              {allLangOptions()}
             </View>
           </List.Section>
         </ScrollView>
@@ -146,7 +166,7 @@ const styles = StyleSheet.create({
     backgroundColor: bg.white,
     borderRadius: radiusSm,
     width: "100%",
-    height: 200,
+    height: 'auto',
   },
   subHeader: {
     color: text.gray_950,

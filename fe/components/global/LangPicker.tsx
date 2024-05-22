@@ -1,5 +1,5 @@
 import { langLabels } from "@/constants/langs";
-import { LangsChoice } from "@/types/translate/lang";
+import { LangsChoice, LangsValue } from "@/types/translate/lang";
 import { Octicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -25,12 +25,39 @@ export default function LangPicker() {
     to: "EN",
   });
 
+  const [recentLangs, setRecentLangs] = useState<LangsValue[]>(["EN"]);
+  // 修改最近使用的语言
+  const addLang = (lang: LangsValue) => {
+    setRecentLangs((prev) => {
+      const langSet = new Set(prev);
+      langSet.add(lang);
+      return Array.from(langSet);
+    });
+  };
+
   function toggleModal() {
     setIsModalVisible(!isModalVisible);
   }
 
   function handleModalClose() {
     setIsModalVisible(false);
+  }
+
+  function handleLangChange(lang: LangsChoice) {
+    setLangs((prev) => {
+      return {
+        ...prev,
+        ...lang,
+      };
+    });
+
+    if (lang.from && lang.from !== "auto") {
+      addLang(lang.from);
+    }
+
+    if (lang.to) {
+      addLang(lang.to);
+    }
   }
 
   return (
@@ -52,7 +79,13 @@ export default function LangPicker() {
         onPress={toggleModal}>
         {langLabels[langs.to]}
       </Button>
-      <LangPickerModal isVisible={isModalVisible} onBackdropPress={handleModalClose} onSwipeComplete={handleModalClose} />
+      <LangPickerModal
+        onLangChange={handleLangChange}
+        recentLangs={recentLangs}
+        isVisible={isModalVisible}
+        onBackdropPress={handleModalClose}
+        onSwipeComplete={handleModalClose}
+      />
     </View>
   );
 }

@@ -1,3 +1,5 @@
+import { LangsValue } from "@/types/translate/lang";
+
 export const langLabels = {
   BG: "保加利亚语",
   ZH: "中文",
@@ -25,3 +27,30 @@ export const langLabels = {
   SV: "瑞典语",
   auto: "自动检测",
 };
+
+export const langOptions: LangsValue[] = [
+  "ZH",
+  "EN",
+  "JA",
+  "FR",
+  "DE",
+  "ES",
+  "DA",
+  "NL",
+  "ET",
+  "FI",
+  "EL",
+  "HU",
+  "IT",
+  "LV",
+  "LT",
+  "PL",
+  "PT",
+  "RO",
+  "RU",
+  "SK",
+  "SL",
+  "SV",
+  "BG",
+  "CS",
+];
