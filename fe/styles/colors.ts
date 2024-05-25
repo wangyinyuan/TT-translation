@@ -3,6 +3,7 @@ export const bg = {
   gray_200: "#e5e7eb",
   gray_400: "#d1d5db",
   white: "#fff",
+  page: "#F5F6FA",
 };
 
 export const text = {
