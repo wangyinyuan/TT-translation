@@ -1,7 +1,8 @@
 import { langLabels } from "@/constants/langs";
+import { useCurLangsStore } from "@/stores/curLangsStore";
 import { LangsChoice, LangsValue } from "@/types/translate/lang";
 import { Octicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
 import LangPickerModal from "../translate/LangPickerModal/LangPickerModal";
@@ -25,6 +26,8 @@ export default function LangPicker() {
     from: "auto",
     to: "EN",
   });
+
+  const setCurLangs = useCurLangsStore((state) => state.setLangs)
 
   const [recentLangs, setRecentLangs] = useState<LangsValue[]>(["EN"]);
   // 修改最近使用的语言
@@ -64,6 +67,11 @@ export default function LangPicker() {
       addLang(lang);
     }
   }
+
+  // 同步到全局状态
+  useEffect(() => {
+    setCurLangs(langs);
+  }, [langs])
 
   return (
     <View className="flex flex-row items-center justify-around shrink w-full">

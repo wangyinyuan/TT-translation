@@ -1,12 +1,15 @@
 import HeaderContainer from "@/components/global/HeaderContainer";
 import IconBtn from "@/components/global/IconBtn";
 import LangPicker from "@/components/global/LangPicker";
+import { useCurLangsStore } from "@/stores/curLangsStore";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 
 export default function Index() {
+  const langs = useCurLangsStore((state) => state.langs);
+
   return (
     <View className="flex">
       <StatusBar style="light" />
@@ -21,6 +24,10 @@ export default function Index() {
           </IconBtn>
         </View>
       </HeaderContainer>
+      <View>
+        <Text>源语言：{langs.from}</Text>
+        <Text>目标语言：{langs.to}</Text>
+      </View>
     </View>
   );
 }
