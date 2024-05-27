@@ -6,40 +6,24 @@ import { radiusBase } from "@/styles/base";
 import { bg, text } from "@/styles/colors";
 import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Dimensions,
-  Keyboard,
+  KeyboardAvoidingView,
   StyleSheet,
   Text,
   TextInput,
-  View
+  View,
 } from "react-native";
 
 const { height } = Dimensions.get("window");
 
 export default function Index() {
   const [inputText, setInputText] = useState("");
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const langs = useCurLangsStore((state) => state.langs);
 
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', (event) => {
-      setKeyboardHeight(event.endCoordinates.height);
-    });
-
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboardHeight(0);
-    });
-
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
-
   return (
-    <View className="flex h-full" style={{justifyContent: "flex-end"}}>
+    <View className="flex h-full" style={{ justifyContent: "flex-end" }}>
       <StatusBar style="light" />
       <HeaderContainer>
         <View className="flex flex-row items-center max-h-20 justify-between w-full">
@@ -82,6 +66,10 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+    backgroundColor: bg.page,
+  },
   bodyContainer: {
     position: "relative",
     height: height - 70,
