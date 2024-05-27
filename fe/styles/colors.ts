@@ -11,4 +11,6 @@ export const text = {
   gray_600: "#9B9CB8",
   gray_950: "#020617",
   green_500: "#66BCCC",
+  gray_800: "#4F5A7E",
+  gray_900: "#2A2D37",
 };
