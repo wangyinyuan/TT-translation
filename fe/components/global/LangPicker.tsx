@@ -68,6 +68,14 @@ export default function LangPicker() {
     }
   }
 
+  function handleExchange() {
+    if (langs.from === 'auto') return;
+    setLangs((prev) => ({
+      from: prev.to,
+      to: prev.from as LangsValue,
+    }));
+  }
+
   // 同步到全局状态
   useEffect(() => {
     setCurLangs(langs);
@@ -82,7 +90,7 @@ export default function LangPicker() {
         onPress={() => toggleModal(false)}>
         {langLabels[langs.from]}
       </Button>
-      <IconBtn className="shrink">
+      <IconBtn className="shrink" onPress={handleExchange}>
         <Octicons name="arrow-switch" size={24} color="white" />
       </IconBtn>
       <Button

@@ -18,7 +18,7 @@ import LangOption from "./LangOption";
 
 interface LangPickerModalProps {
   [key: string]: any;
-  onLangChange?: (lang: LangsValue | 'auto') => void;
+  onLangChange?: (lang: LangsValue | "auto") => void;
   recentLangs?: LangsValue[];
   isTargetPicker: boolean;
   curLangs: LangsChoice;
@@ -46,7 +46,9 @@ export default function LangPickerModal({
   const [scrollOffsetMax, setScrollOffsetMax] = useState(0);
   const [contentHeight, setContentHeight] = useState(0);
   const [scrollViewHeight, setScrollViewHeight] = useState(0);
-  const [selectedLang, setSelectedLang] = useState<LangsValue | "auto" | undefined>();
+  const [selectedLang, setSelectedLang] = useState<
+    LangsValue | "auto" | undefined
+  >();
   const scrollViewRef = useRef<ScrollView | null>(null);
 
   const allLangOptions = () => {
@@ -88,8 +90,7 @@ export default function LangPickerModal({
   useEffect(() => {
     if (isTargetPicker) {
       setSelectedLang(curLangs.to);
-    }
-    else {
+    } else {
       setSelectedLang(curLangs.from);
     }
   }, [isTargetPicker, curLangs.to, curLangs.from]);
@@ -162,6 +163,19 @@ export default function LangPickerModal({
             theme={searchBarTheme}
             inputStyle={styles.input}
           />
+          {!isTargetPicker && (
+            <List.Section>
+              <View style={[styles.langOptionsContainer, styles.autoContainer]}>
+                <LangOption
+                  key={"auto"}
+                  isLast={true}
+                  title={langLabels["auto"]}
+                  onPress={() => handleLangChange("auto")}
+                  isSelected={isOptionSelected("auto")}
+                />
+              </View>
+            </List.Section>
+          )}
           <List.Section>
             <List.Subheader style={styles.subHeader}>
               Recent languages
@@ -204,6 +218,10 @@ const styles = StyleSheet.create({
     borderRadius: radiusSm,
     width: "100%",
     height: "auto",
+  },
+  autoContainer: {
+    marginTop: 25,
+    marginBottom: -10,
   },
   subHeader: {
     color: text.gray_950,
