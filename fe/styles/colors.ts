@@ -4,6 +4,8 @@ export const bg = {
   gray_400: "#d1d5db",
   white: "#fff",
   page: "#F5F6FA",
+  purple_500: "#8980F0",
+  purple_400: "#a78bfa",
 };
 
 export const text = {

@@ -9,11 +9,10 @@ import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
   Dimensions,
-  KeyboardAvoidingView,
   StyleSheet,
   Text,
   TextInput,
-  View,
+  View
 } from "react-native";
 
 const { height } = Dimensions.get("window");
@@ -21,6 +20,10 @@ const { height } = Dimensions.get("window");
 export default function Index() {
   const [inputText, setInputText] = useState("");
   const langs = useCurLangsStore((state) => state.langs);
+
+  function getTextLength() {
+    return inputText.length;
+  }
 
   return (
     <View className="flex h-full" style={{ justifyContent: "flex-end" }}>
@@ -56,7 +59,15 @@ export default function Index() {
             <TextInput
               value={inputText}
               style={styles.textInput}
-              onChangeText={(text) => setInputText(text)}></TextInput>
+              onChangeText={(text) => setInputText(text)}
+              cursorColor={bg.purple_400}
+              maxLength={1000}
+              multiline={true}
+              textAlignVertical="top"
+              ></TextInput>
+              <View style={styles.lengthHint}>
+                {inputText.length > 0 && <Text style={styles.hintText}>{getTextLength()}/1000</Text>}
+              </View>
           </View>
         </View>
         <View style={styles.bottomContainer}></View>
@@ -104,7 +115,7 @@ const styles = StyleSheet.create({
   },
   textInputContainer: {
     flex: 1,
-    backgroundColor: bg.white,
+    // backgroundColor: bg.white,
   },
   row: {
     flexDirection: "row",
@@ -115,8 +126,19 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
   },
   textInput: {
-    height: "100%",
+    height: "85%",
     width: "100%",
     margin: 0,
+    fontSize: 24,
   },
+  lengthHint: {
+    width: "100%",
+    flex: 1,
+    alignItems: "flex-end",
+    paddingTop: 8,
+  },
+  hintText: {
+    fontSize: 12,
+    color: text.gray_600,
+  }
 });
