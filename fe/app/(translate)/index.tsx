@@ -6,24 +6,43 @@ import { radiusBase } from "@/styles/base";
 import { bg, text } from "@/styles/colors";
 import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
+  Keyboard,
   StyleSheet,
   Text,
   TextInput,
-  View
+  View,
 } from "react-native";
 
 const { height } = Dimensions.get("window");
 
 export default function Index() {
   const [inputText, setInputText] = useState("");
+  const inputRef = useRef<TextInput>(null);
   const langs = useCurLangsStore((state) => state.langs);
 
   function getTextLength() {
     return inputText.length;
   }
+
+  function toBlur() {
+    inputRef.current?.blur();
+  }
+
+  function clearAll() {
+    setInputText("");
+  }
+
+  // 键盘关闭事件注册
+  useEffect(() => {
+    const keyboardHideListener = Keyboard.addListener("keyboardDidHide", toBlur);
+
+    return () => {
+      keyboardHideListener.remove();
+    };
+  }, [])
 
   return (
     <View className="flex h-full" style={{ justifyContent: "flex-end" }}>
@@ -50,13 +69,14 @@ export default function Index() {
               <IconBtn style={styles.iconBtn}>
                 <AntDesign name="sound" size={24} color={text.gray_800} />
               </IconBtn>
-              <IconBtn style={styles.iconBtn}>
+              <IconBtn style={styles.iconBtn} onPress={() => clearAll()}>
                 <MaterialIcons name="cancel" size={24} color={text.gray_800} />
               </IconBtn>
             </View>
           </View>
           <View style={styles.textInputContainer}>
             <TextInput
+              ref={inputRef}
               value={inputText}
               style={styles.textInput}
               onChangeText={(text) => setInputText(text)}
