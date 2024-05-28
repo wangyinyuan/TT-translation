@@ -1,15 +1,18 @@
 import HeaderContainer from "@/components/global/HeaderContainer";
 import IconBtn from "@/components/global/IconBtn";
 import LangPicker from "@/components/global/LangPicker";
+import ToolsBar from "@/components/translate/ToolsBar/ToolsBar";
+import { langLabels } from "@/constants/langs";
 import { useCurLangsStore } from "@/stores/curLangsStore";
 import { radiusBase } from "@/styles/base";
 import { bg, text } from "@/styles/colors";
-import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   Keyboard,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -37,12 +40,15 @@ export default function Index() {
 
   // 键盘关闭事件注册
   useEffect(() => {
-    const keyboardHideListener = Keyboard.addListener("keyboardDidHide", toBlur);
+    const keyboardHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      toBlur
+    );
 
     return () => {
       keyboardHideListener.remove();
     };
-  }, [])
+  }, []);
 
   return (
     <View className="flex h-full" style={{ justifyContent: "flex-end" }}>
@@ -61,7 +67,7 @@ export default function Index() {
       <View style={[styles.bodyContainer]}>
         <View style={styles.topContainer}>
           <View style={styles.rowBetween}>
-            <Text style={styles.clueText}>英语</Text>
+            <Text style={styles.clueText}>{langLabels[langs.from]}</Text>
             <View style={[styles.row]}>
               <IconBtn style={styles.iconBtn}>
                 <Feather name="copy" size={24} color={text.gray_800} />
@@ -83,14 +89,36 @@ export default function Index() {
               cursorColor={bg.purple_400}
               maxLength={1000}
               multiline={true}
-              textAlignVertical="top"
-              ></TextInput>
-              <View style={styles.lengthHint}>
-                {inputText.length > 0 && <Text style={styles.hintText}>{getTextLength()}/1000</Text>}
-              </View>
+              textAlignVertical="top"></TextInput>
+            <View style={styles.lengthHint}>
+              {inputText.length > 0 && (
+                <Text style={styles.hintText}>{getTextLength()}/1000</Text>
+              )}
+            </View>
           </View>
         </View>
-        <View style={styles.bottomContainer}></View>
+        <View style={styles.bottomContainer}>
+          <View style={[styles.rowBetween, styles.fullWidth]}>
+            <Text style={[styles.clueText, { color: text.green_500 }]}>
+              {langLabels[langs.to]}
+            </Text>
+            <View style={[styles.row]}>
+              <IconBtn style={styles.iconBtn}>
+                <Feather name="copy" size={24} color={text.green_500} />
+              </IconBtn>
+              <IconBtn style={styles.iconBtn}>
+                <AntDesign name="sound" size={24} color={text.green_500} />
+              </IconBtn>
+              <IconBtn style={styles.iconBtn}>
+                <Entypo name="share" size={24} color={text.green_500} />
+              </IconBtn>
+            </View>
+          </View>
+          <ScrollView style={[styles.fullWidth]}>
+            <Text style={styles.textOutput}>Translations</Text>
+          </ScrollView>
+          <ToolsBar />
+        </View>
       </View>
     </View>
   );
@@ -117,8 +145,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   bottomContainer: {
+    position: "relative",
+    alignItems: "center",
     width: "100%",
     height: "60%",
+    paddingTop: 20,
+    paddingHorizontal: 20,
     backgroundColor: bg.white,
     borderTopLeftRadius: radiusBase,
     borderTopRightRadius: radiusBase,
@@ -151,6 +183,10 @@ const styles = StyleSheet.create({
     margin: 0,
     fontSize: 24,
   },
+  textOutput: {
+    fontSize: 24,
+    color: text.green_500,
+  },
   lengthHint: {
     width: "100%",
     flex: 1,
@@ -160,5 +196,8 @@ const styles = StyleSheet.create({
   hintText: {
     fontSize: 12,
     color: text.gray_600,
+  },
+  fullWidth: {
+    width: "100%",
   }
 });
