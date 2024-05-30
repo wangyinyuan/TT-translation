@@ -7,6 +7,7 @@ import { useCurLangsStore } from "@/stores/curLangsStore";
 import { radiusBase } from "@/styles/base";
 import { bg, text } from "@/styles/colors";
 import { AntDesign, Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
+import * as Clipboard from "expo-clipboard";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -23,6 +24,7 @@ const { height } = Dimensions.get("window");
 
 export default function Index() {
   const [inputText, setInputText] = useState("");
+  const [outputText, setOutputText] = useState("");
   const inputRef = useRef<TextInput>(null);
   const langs = useCurLangsStore((state) => state.langs);
 
@@ -36,6 +38,15 @@ export default function Index() {
 
   function clearAll() {
     setInputText("");
+  }
+
+  async function copyTextToClipboard(isTarget: boolean) {
+    console.log("copy");
+    if (isTarget) {
+      await Clipboard.setStringAsync(outputText);
+    } else {
+      await Clipboard.setStringAsync(inputText);
+    }
   }
 
   // 键盘关闭事件注册
@@ -69,7 +80,9 @@ export default function Index() {
           <View style={styles.rowBetween}>
             <Text style={styles.clueText}>{langLabels[langs.from]}</Text>
             <View style={[styles.row]}>
-              <IconBtn style={styles.iconBtn}>
+              <IconBtn
+                style={styles.iconBtn}
+                onPress={() => copyTextToClipboard(false)}>
                 <Feather name="copy" size={24} color={text.gray_800} />
               </IconBtn>
               <IconBtn style={styles.iconBtn}>
@@ -103,7 +116,9 @@ export default function Index() {
               {langLabels[langs.to]}
             </Text>
             <View style={[styles.row]}>
-              <IconBtn style={styles.iconBtn}>
+              <IconBtn
+                style={styles.iconBtn}
+                onPress={() => copyTextToClipboard(true)}>
                 <Feather name="copy" size={24} color={text.green_500} />
               </IconBtn>
               <IconBtn style={styles.iconBtn}>
@@ -199,5 +214,5 @@ const styles = StyleSheet.create({
   },
   fullWidth: {
     width: "100%",
-  }
+  },
 });
