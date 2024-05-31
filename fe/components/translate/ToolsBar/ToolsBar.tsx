@@ -31,12 +31,16 @@ export default function ToolsBar() {
   useEffect(() => {
     if (cameraBtnRef.current && voiceBtnRef.current) {
       // @ts-ignore
-      cameraBtnRef.current.measure((_x, _y, width, height, pageX, pageY) => {
+      cameraBtnRef.current.measure((...args) => {
+        const pageX = args[4];
+        const width = args[2];
         setCameraX(pageX + width / 2);
       });
 
       // @ts-ignore
-      voiceBtnRef.current.measure((_x, _y, width, height, pageX, pageY) => {
+      voiceBtnRef.current.measure((...args) => {
+        const pageX = args[4];
+        const width = args[2];
         setVoiceX(pageX + width / 2);
       });
     }
