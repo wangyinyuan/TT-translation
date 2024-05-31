@@ -9,6 +9,7 @@ export const bg = {
   purple_200: "#e9d5ff",
   green_200: "#daffcc",
   red_200: "#fef0f0",
+  red_600: "#dc2626",
   yellow_200: "#fff3cc",
 };
 
