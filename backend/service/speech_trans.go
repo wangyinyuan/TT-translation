@@ -1,8 +1,11 @@
 package service
 
 import (
-	"encoding/base64"
+	// "encoding/json"
 	"fmt"
+	"time"
+
+	"encoding/base64"
 	"os"
 	"src/global"
 
@@ -21,7 +24,6 @@ func convertAudioToBase64(filePath string) (string, error) {
 	return base64.StdEncoding.EncodeToString(data), nil
 }
 func organizeRequest(filepath string) (uint64, error) {
-	// todo : 秘钥处理，不能直接放代码里
 	credential := common.NewCredential(
 		global.GVA_CONFIG.App.SecretID,
 		global.GVA_CONFIG.App.SecretKey,
@@ -65,7 +67,6 @@ func organizeRequest(filepath string) (uint64, error) {
 
 func organizeQuery(taskid uint64) (asr.DescribeTaskStatusResponse, error) {
 
-	// todo : 秘钥处理，不能直接放代码里
 	credential := common.NewCredential(
 		global.GVA_CONFIG.App.SecretID,
 		global.GVA_CONFIG.App.SecretKey,
@@ -97,22 +98,64 @@ func organizeQuery(taskid uint64) (asr.DescribeTaskStatusResponse, error) {
 	return *response, nil
 }
 
-// func OrganizeSpeech(file io.Reader) (string, error) {
-// 	// todo 在这里实现语音识别的逻辑
-// 	// 返回识别结果和可能的错误
-// 	return "", nil
-// }
+// 轮询
+func pollingRecognitionResult(taskID uint64, resultChan chan<- asr.DescribeTaskStatusResponse, errChan chan<- error) {
+
+	go func() {
+		interval := 1 * time.Second // 设置轮询间隔
+		for {
+			resp, err := organizeQuery(taskID)
+			if err != nil {
+				fmt.Println("[Error] query:", err)
+				// time.Sleep(interval)
+				errChan <- err
+				return
+			}
+			fmt.Printf("Task %d status: %d - %s\n", taskID, *resp.Response.Data.Status, *resp.Response.Data.Result)
+
+			if *resp.Response.Data.Status == 2 {
+				fmt.Println("Task finished with status:success")
+				resultChan <- resp
+				break // 退出轮询
+			}
+			if *resp.Response.Data.Status == 3 {
+				fmt.Printf("Task finished with status:failed \nerror message:%s", *resp.Response.Data.ErrorMsg)
+				resultChan <- resp
+				break
+			}
+			time.Sleep(interval) // 等待后重试
+		}
+	}()
+
+	// 阻塞主goroutine，防止程序立即退出
+	select {}
+}
 
 func OrganizeSpeech(filepath string) (asr.DescribeTaskStatusResponse, error) {
-	// todo 在这里实现语音识别的逻辑
+	// 申请识别
 	taskid, err := organizeRequest(filepath)
 	if err != nil {
 		fmt.Printf("err in organizeRequest: %s", err)
+		return asr.DescribeTaskStatusResponse{}, err
 	}
-	response, err2 := organizeQuery(taskid)
-	if err2 != nil {
-		fmt.Printf("err in organizeQuery: %s", err)
+
+	// 轮询结果
+
+	resultChan := make(chan asr.DescribeTaskStatusResponse)
+	errChan := make(chan error)
+
+	// 启动轮询goroutine
+	go pollingRecognitionResult(taskid, resultChan, errChan)
+
+	// 等待结果或错误
+	select {
+	case result := <-resultChan:
+		// 处理成功的结果
+		fmt.Println("Received result:", result)
+		return result, nil
+	case err := <-errChan:
+		// 处理错误
+		fmt.Println("Received error:", err)
+		return asr.DescribeTaskStatusResponse{}, err
 	}
-	// 返回识别结果和可能的错误
-	return response, nil
 }

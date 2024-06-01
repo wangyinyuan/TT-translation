@@ -6,14 +6,22 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"src/model"
-
 	"src/service"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
+func removeBracketsAndContents(input string) string {
+	// 匹配 [ 开始的任何内容直到 ]
+	// 注意：这里假设 [] 中没有嵌套或转义字符
+	re := regexp.MustCompile(`\[[^\]]*\]`)
+	// 使用空字符串替换匹配到的部分
+	return re.ReplaceAllString(input, "")
+}
 func SpeechTranslateHandler(c *gin.Context) {
 	// 解析前端发送过来的音频文件
 	file, fileHeader, err := c.Request.FormFile("file")
@@ -35,7 +43,6 @@ func SpeechTranslateHandler(c *gin.Context) {
 		fmt.Println(err)
 		return
 	}
-	defer f.Close()
 
 	defer func() {
 		// 确保在函数返回前删除临时文件
@@ -44,6 +51,7 @@ func SpeechTranslateHandler(c *gin.Context) {
 		}
 	}()
 
+	defer f.Close()
 	// 将文件内容写入到临时文件中
 	_, err = io.Copy(f, file)
 	if err != nil {
@@ -55,6 +63,10 @@ func SpeechTranslateHandler(c *gin.Context) {
 	// 调用语音识别的服务
 	organizeResponse, err := service.OrganizeSpeech(filePath)
 	result := *organizeResponse.Response.Data.Result
+	// 去掉 [] 和它们的内容
+	result = removeBracketsAndContents(result)
+	// 再去掉字符串两端的空格
+	result = strings.TrimSpace(result)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to recognize speech"})
 		return
