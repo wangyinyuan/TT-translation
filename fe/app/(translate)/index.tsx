@@ -8,6 +8,7 @@ import { radiusBase } from "@/styles/base";
 import { bg, text } from "@/styles/colors";
 import { AntDesign, Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
+import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -70,9 +71,11 @@ export default function Index() {
             <AntDesign name="setting" size={24} color="white" />
           </IconBtn>
           <LangPicker />
-          <IconBtn>
-            <Feather name="bookmark" size={24} color="white" />
-          </IconBtn>
+          <Link href="/(translate)/history">
+            <IconBtn>
+              <Feather name="bookmark" size={24} color="white" />
+            </IconBtn>
+          </Link>
         </View>
       </HeaderContainer>
       <View style={[styles.bodyContainer]}>
