@@ -7,7 +7,7 @@ const toastColor = {
   },
   error: {
     bg: bg.red_200,
-    text: text.red_900,
+    text: text.red_500,
   },
   warning: {
     bg: bg.yellow_200,

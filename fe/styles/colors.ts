@@ -21,8 +21,9 @@ export const text = {
   green_950: "#86B832",
   gray_800: "#4F5A7E",
   gray_900: "#2A2D37",
-  red_900: "#f56c6c",
+  red_500: "#f56c6c",
   yellow_900: "#FFAA00",
   purple_900: "#7e22ce",
+  blue_500: "#4185F6",
   white: "#fff",
 };
