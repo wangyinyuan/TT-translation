@@ -1,6 +1,7 @@
 import HeaderContainer from "@/components/global/HeaderContainer";
 import IconBtn from "@/components/global/IconBtn";
 import LangPicker from "@/components/global/LangPicker";
+import LoadingSkeleton from "@/components/global/LoadingSkeleton";
 import ToolsBar from "@/components/translate/ToolsBar/ToolsBar";
 import { langLabels } from "@/constants/langs";
 import { useCurLangsStore } from "@/stores/curLangsStore";
@@ -133,7 +134,8 @@ export default function Index() {
             </View>
           </View>
           <ScrollView style={[styles.fullWidth]}>
-            <Text style={styles.textOutput}>Translations</Text>
+            <LoadingSkeleton></LoadingSkeleton>
+            {/* <Text style={styles.textOutput}>Translations</Text> */}
           </ScrollView>
           <ToolsBar />
         </View>

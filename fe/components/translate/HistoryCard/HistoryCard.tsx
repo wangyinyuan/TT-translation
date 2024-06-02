@@ -81,7 +81,7 @@ export default function HistoryCard({
             <AntDesign
               name={expanded ? "up" : "down"}
               size={24}
-              color="black"
+              color={tColor.gray_600}
             />
           </IconBtn>
         </View>

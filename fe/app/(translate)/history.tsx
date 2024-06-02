@@ -1,6 +1,5 @@
 import HeaderContainer from "@/components/global/HeaderContainer";
 import IconBtn from "@/components/global/IconBtn";
-import ExpandableCard from "@/components/translate/CollapsibleCard/CollapsibleCard";
 import HistoryCard from "@/components/translate/HistoryCard/HistoryCard";
 import { radiusBase } from "@/styles/base";
 import { bg, text } from "@/styles/colors";
@@ -50,30 +49,6 @@ export default function HistoryView() {
                 repudiandae. Necessitatibus veniam dolor dolores consequatur,
                 temporibus aliquid maxime repellendus cum iure, in ipsum optio!
                 Rerum modi earum quis impedit, veritatis commodi ad dolor"></HistoryCard>
-            <ExpandableCard>
-              <Text>
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Voluptate dolorem placeat soluta, veritatis ullam dicta
-                repudiandae. Necessitatibus veniam dolor dolores consequatur,
-                temporibus aliquid maxime repellendus cum iure, in ipsum optio!
-                Rerum modi earum quis impedit, veritatis commodi ad dolor
-                assumenda laboriosam laborum ut blanditiis excepturi doloremque
-                veniam necessitatibus quo molestiae adipisci incidunt!
-                Voluptate, unde earum est qui voluptatibus voluptas doloremque!
-                Temporibus quisquam necessitatibus officiis, commodi laborum
-                dolore distinctio facere, voluptates aspernatur molestiae
-                architecto quaerat aut exercitationem beatae? Fugit, molestiae
-                dolorem. Aperiam a esse sed cupiditate aut at quos cumque
-                recusandae. Animi velit perferendis maxime illo deleniti,
-                molestiae similique, in molestias iste accusantium repellat,
-                mollitia commodi accusamus incidunt earum est ipsum voluptatem.
-                Numquam cum cumque sit natus dolores eius eum laudantium!
-                Reprehenderit enim repudiandae odio voluptatem illo rem
-                excepturi earum sint dignissimos similique delectus provident,
-                error cum atque facere deserunt hic officiis alias est!
-                Perspiciatis numquam quaerat, sit rerum molestias perferendis.
-              </Text>
-            </ExpandableCard>
           </View>
         </ScrollView>
       </View>

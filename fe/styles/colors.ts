@@ -8,6 +8,8 @@ export const bg = {
   purple_400: "#a78bfa",
   purple_200: "#e9d5ff",
   green_200: "#daffcc",
+  green_300: "#a7d7e0",
+  green_100: "#d3ebf0",
   red_200: "#fef0f0",
   red_600: "#dc2626",
   yellow_200: "#fff3cc",
