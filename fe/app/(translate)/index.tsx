@@ -46,7 +46,7 @@ export default function Index() {
     // 发送翻译请求
     setTranslation();
   };
-  
+
 
   async function setTranslation() {
     try {

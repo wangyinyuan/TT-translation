@@ -1,6 +1,7 @@
 import IconBtn from "@/components/global/IconBtn";
 import { bg, text } from "@/styles/colors";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, {
@@ -13,9 +14,11 @@ import Animated, {
 
 const voiceBtnAnimationDuration = 500;
 
+interface ToolsBarProps {}
+
 const AnimatedIconBtn = Animated.createAnimatedComponent(IconBtn);
 
-export default function ToolsBar() {
+export default function ToolsBar({}: ToolsBarProps) {
   const [isVoiceActive, setIsVoiceActive] = useState(false);
   const [isVoiceBack, setIsVoiceBack] = useState(true);
   const [cameraX, setCameraX] = useState(0);
@@ -27,6 +30,26 @@ export default function ToolsBar() {
   const voiceBtnRef = useRef<React.ElementRef<typeof IconBtn>>(null);
 
   const transX = cameraX - voiceX;
+
+  const pickImageAsync = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      console.log(result);
+    }
+  };
+
+  const openCameraAsync = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    console.log(result);
+  };
 
   useEffect(() => {
     if (cameraBtnRef.current && voiceBtnRef.current) {
@@ -68,7 +91,7 @@ export default function ToolsBar() {
       voiceBtnColor.value = withTiming(1, {
         duration: voiceBtnAnimationDuration,
         easing: Easing.linear,
-      })
+      });
 
       setIsVoiceBack(false);
     } else {
@@ -85,7 +108,7 @@ export default function ToolsBar() {
       voiceBtnColor.value = withTiming(0, {
         duration: voiceBtnAnimationDuration,
         easing: Easing.linear,
-      })
+      });
 
       if (!isVoiceBack) {
         setTimeout(() => {
@@ -99,8 +122,8 @@ export default function ToolsBar() {
     const backgroundColor = interpolateColor(
       voiceBtnColor.value,
       [0, 1],
-      [bg.purple_500, bg.red_600],
-    )
+      [bg.purple_500, bg.red_600]
+    );
 
     return {
       width: voiceBtnSize.value,
@@ -120,7 +143,7 @@ export default function ToolsBar() {
       <IconBtn
         mode="contained"
         containerColor={bg.purple_500}
-        onPress={() => console.log("Button Pressed!")}
+        onPress={() => pickImageAsync()}
         size={34}
         style={[hideStyle]}>
         <FontAwesome6 name="image" size={24} color={text.white} />
@@ -129,7 +152,7 @@ export default function ToolsBar() {
         ref={cameraBtnRef}
         mode="contained"
         containerColor={bg.purple_500}
-        onPress={() => console.log("Button Pressed!")}
+        onPress={() => openCameraAsync()}
         size={68}
         style={[hideStyle]}>
         <FontAwesome name="camera" size={24} color={text.white} />
@@ -138,7 +161,7 @@ export default function ToolsBar() {
         ref={voiceBtnRef}
         mode="contained"
         onPress={() => handleVoicePress()}
-        style={[animatedStyle, {backgroundColor: bg.purple_500}]}>
+        style={[animatedStyle, { backgroundColor: bg.purple_500 }]}>
         <FontAwesome6 name="microphone" size={24} color={text.white} />
       </AnimatedIconBtn>
     </View>
