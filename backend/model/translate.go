@@ -7,5 +7,7 @@ type TranslateRequest struct {
 }
 
 type TranslateResponse struct {
-	Data string `json:"data"`
+	Translation          string `json:"translation"`
+	SourceSpeechResponce TTSResponce
+	TargetSpeechResponce TTSResponce
 }

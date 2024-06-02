@@ -73,6 +73,8 @@ github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/asr v1.0.933 h1:r2U0wlB
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/asr v1.0.933/go.mod h1:iaKXwvdwBno+6tRjwI4P8xG8qffeGRAnwEz0lrALfI4=
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.933 h1:U9cMP5WSO7GNZoQ0Br2MlzG31KU+WSeyCaXeUNV4Mow=
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.933/go.mod h1:r5r4xbfxSaeR04b166HGsBa/R4U3SueirEUpXGuw+Q0=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tts v1.0.933 h1:YO9xWx8iZxBaNsoC4mrzoeyZamXpcItp/kOiCMhkuGg=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tts v1.0.933/go.mod h1:WKGqDMHB+ZIvRbLVAgkJot27FrBETD+Qv7hBlC+W30g=
 github.com/twitchyliquid64/golang-asm v0.15.1 h1:SU5vSMR7hnwNxj24w34ZyCi/FmDZTkS4MhqMhdFk5YI=
 github.com/twitchyliquid64/golang-asm v0.15.1/go.mod h1:a1lVb/DtPvCB8fslRZhAngC2+aY1QWCk3Cedj/Gdt08=
 github.com/ugorji/go/codec v1.2.11 h1:BMaWp1Bb6fHwEtbplGBGJ498wD+LKlNSl25MjdZY4dU=

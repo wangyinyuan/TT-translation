@@ -8,8 +8,8 @@ import (
 	"src/model"
 )
 
+// Translate 方法用于向 deeplx API 发送翻译请求并返回翻译结果和源语言
 func Translate(translateReq model.TranslateRequest) (string, error) {
-
 	// 将请求体转换为 JSON
 	requestBody, err := json.Marshal(translateReq)
 	if err != nil {
@@ -35,10 +35,12 @@ func Translate(translateReq model.TranslateRequest) (string, error) {
 		return "", err
 	}
 
-	// 返回翻译结果
-	if translation, ok := translateRes["data"].(string); ok {
+	// 提取翻译结果和源语言
+	translation, translationOk := translateRes["data"].(string)
+
+	if translationOk {
 		return translation, nil
-	} else {
-		return "", nil
 	}
+
+	return "", err
 }
