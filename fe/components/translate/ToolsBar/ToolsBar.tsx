@@ -1,7 +1,9 @@
 import IconBtn from "@/components/global/IconBtn";
+import { useSelectedImageStore } from "@/stores/selectedImage";
 import { bg, text } from "@/styles/colors";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
+import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, {
@@ -28,6 +30,7 @@ export default function ToolsBar({}: ToolsBarProps) {
   const voiceBtnColor = useSharedValue<number>(0);
   const cameraBtnRef = useRef<React.ElementRef<typeof IconBtn>>(null);
   const voiceBtnRef = useRef<React.ElementRef<typeof IconBtn>>(null);
+  const setImgUrl = useSelectedImageStore((state) => state.setImgUrl);
 
   const transX = cameraX - voiceX;
 
@@ -39,6 +42,8 @@ export default function ToolsBar({}: ToolsBarProps) {
 
     if (!result.canceled) {
       console.log(result);
+      setImgUrl(result.assets[0].uri);
+      router.push("/(translate)/camera");
     }
   };
 
@@ -48,7 +53,11 @@ export default function ToolsBar({}: ToolsBarProps) {
       quality: 1,
     });
 
-    console.log(result);
+    if (!result.canceled) {
+      console.log(result);
+      setImgUrl(result.assets[0].uri);
+      router.push("/(translate)/camera");
+    }
   };
 
   useEffect(() => {

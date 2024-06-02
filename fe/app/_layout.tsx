@@ -9,7 +9,7 @@ import "../global.css";
 
 export {
   // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
+  ErrorBoundary
 } from "expo-router";
 
 const customTheme = vars({
@@ -40,6 +40,14 @@ function RootLayoutNav() {
     <Stack
       screenOptions={{
         headerShown: false,
-      }}></Stack>
+      }}>
+      <Stack.Screen name="(translate)/index"></Stack.Screen>
+      <Stack.Screen name="(translate)/history"></Stack.Screen>
+      <Stack.Screen
+        name="(translate)/camera"
+        options={{
+          animation: "slide_from_bottom",
+        }}></Stack.Screen>
+    </Stack>
   );
 }
