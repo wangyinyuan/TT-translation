@@ -1,7 +1,7 @@
 import { BASE_URL } from "@/constants/server";
-import Toast from "react-native-root-toast";
-import axios, { AxiosRequestConfig } from "axios";
 import { toastConfig } from "@/constants/toastConfig";
+import axios, { AxiosRequestConfig } from "axios";
+import Toast from "react-native-root-toast";
 
 const httpInstance = axios.create({
   baseURL: BASE_URL,
@@ -18,7 +18,6 @@ httpInstance.interceptors.response.use(
     } else {
       Toast.show("出错啦：" + e.message, toastConfig.error);
     }
-
     return Promise.reject(e);
   }
 );

@@ -1,3 +1,4 @@
+import { getTranslation } from "@/apis/translate/getTranslation";
 import HeaderContainer from "@/components/global/HeaderContainer";
 import IconBtn from "@/components/global/IconBtn";
 import LangPicker from "@/components/global/LangPicker";
@@ -27,6 +28,7 @@ const { height } = Dimensions.get("window");
 export default function Index() {
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<TextInput>(null);
   const langs = useCurLangsStore((state) => state.langs);
 
@@ -34,9 +36,34 @@ export default function Index() {
     return inputText.length;
   }
 
-  function toBlur() {
+  const toBlur = () => {
     inputRef.current?.blur();
+    console.log("inputText", inputText);
+    // 如果输入框为空，直接结束
+    if (inputText === "") return;
+    // 展示加载动画
+    setIsLoading(true);
+    // 发送翻译请求
+    setTranslation();
+  };
+  
+
+  async function setTranslation() {
+    try {
+      const res = await getTranslation({
+        text: inputText,
+        from: langs.from,
+        to: langs.to,
+      });
+      console.log(res);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      // 关闭加载动画
+      setIsLoading(false);
+    }
   }
+
 
   function clearAll() {
     setInputText("");
@@ -55,13 +82,13 @@ export default function Index() {
   useEffect(() => {
     const keyboardHideListener = Keyboard.addListener(
       "keyboardDidHide",
-      toBlur
+      toBlur,
     );
 
     return () => {
       keyboardHideListener.remove();
     };
-  }, []);
+  }, [inputText]);
 
   return (
     <View className="flex h-full" style={{ justifyContent: "flex-end" }}>
@@ -134,7 +161,7 @@ export default function Index() {
             </View>
           </View>
           <ScrollView style={[styles.fullWidth]}>
-            <LoadingSkeleton></LoadingSkeleton>
+            {isLoading && <LoadingSkeleton></LoadingSkeleton>}
             {/* <Text style={styles.textOutput}>Translations</Text> */}
           </ScrollView>
           <ToolsBar />

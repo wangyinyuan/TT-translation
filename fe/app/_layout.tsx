@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { vars } from "nativewind";
 import { View } from "react-native";
 import { PaperProvider } from "react-native-paper";
+import { RootSiblingParent } from "react-native-root-siblings";
 import "../global.css";
 
 export {
@@ -24,9 +25,11 @@ export default function RootLayout() {
 
   return (
     <PaperProvider>
-      <View style={customTheme} className="h-full w-full">
-        <RootLayoutNav />
-      </View>
+      <RootSiblingParent>
+        <View style={customTheme} className="h-full w-full">
+          <RootLayoutNav />
+        </View>
+      </RootSiblingParent>
       <StatusBar style="light" />
     </PaperProvider>
   );
@@ -37,7 +40,6 @@ function RootLayoutNav() {
     <Stack
       screenOptions={{
         headerShown: false,
-      }}>
-      </Stack>
+      }}></Stack>
   );
 }
