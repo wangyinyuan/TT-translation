@@ -29,9 +29,8 @@ export default function HistoryCard({
   soundUrl,
 }: HistoryCardProps) {
   const cardHeight = useSharedValue(DEFAULT_HEIGHT);
-  const actualHeight = useSharedValue(0);
+  const [actualHeight, setActualHeight] = useState(0);
   const [expanded, setExpanded] = useState(false);
-  const [measured, setMeasured] = useState(false);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -40,17 +39,14 @@ export default function HistoryCard({
   });
 
   function onLayout(event: LayoutChangeEvent) {
-    if (!measured) {
-      actualHeight.value = event.nativeEvent.layout.height;
-      setMeasured(true);
-    }
+    setActualHeight(event.nativeEvent.layout.height);
   }
+
 
   function handleToggle() {
     setExpanded(!expanded);
-    cardHeight.value = expanded ? DEFAULT_HEIGHT : actualHeight.value;
+    cardHeight.value = expanded ? DEFAULT_HEIGHT : actualHeight;
   }
-
 
   return (
     <View>
@@ -79,7 +75,7 @@ export default function HistoryCard({
           </View>
         </View>
       </Animated.View>
-      {actualHeight.value > DEFAULT_HEIGHT && (
+      {actualHeight > DEFAULT_HEIGHT && (
         <View style={styles.toggleButtonContainer}>
           <IconBtn style={[styles.btn]} onPress={handleToggle}>
             <AntDesign
@@ -131,5 +127,5 @@ const styles = StyleSheet.create({
   toggleButtonContainer: {
     alignItems: "center",
     marginTop: -8,
-  }
+  },
 });
