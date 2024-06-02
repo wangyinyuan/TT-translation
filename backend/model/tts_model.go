@@ -1,6 +1,5 @@
 package model
 
-type TTSRequest struct {
-	Text     string `json:"text" binding:"required"`
-	Language string `json:"language" binding:"required"`
+type TTSResponce struct {
+	Audio string `json:"audio" `
 }

@@ -6,6 +6,7 @@ import (
 	"src/service"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func TranslateHandler(c *gin.Context) {
@@ -21,8 +22,31 @@ func TranslateHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to translate"})
 		return
 	}
+	speechResult1, err1 := service.TextToSpeech(req.Text, uuid.New().String())
+	if err1 != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get source text speech"})
+		return
+	}
+	speechResult2, err2 := service.TextToSpeech(translation, uuid.New().String())
+	if err2 != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get translation speech"})
+		return
+	}
+	audio1 := speechResult1.Response.Audio
+	audio2 := speechResult2.Response.Audio
+	sourceSpeechResponse := model.TTSResponce{
+		Audio: *audio1,
+	}
+	targetSpeechResponse := model.TTSResponce{
+		Audio: *audio2,
+	}
+	translateResponse := model.TranslateResponse{
+		Translation:          translation,
+		SourceSpeechResponce: sourceSpeechResponse,
+		TargetSpeechResponce: targetSpeechResponse,
+	}
 
 	// 将翻译结果返回给前端
-	c.JSON(http.StatusOK, gin.H{"translation": translation})
+	c.JSON(http.StatusOK, translateResponse)
 
 }
