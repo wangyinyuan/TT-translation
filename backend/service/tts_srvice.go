@@ -37,6 +37,6 @@ func TextToSpeech(text string, sessionid string) (*tts.TextToVoiceResponse, erro
 		panic(err)
 	}
 	// 输出json格式的字符串回包
-	fmt.Printf("%s", response.ToJsonString())
+	// fmt.Printf("%s", response.ToJsonString())
 	return response, nil
 }
