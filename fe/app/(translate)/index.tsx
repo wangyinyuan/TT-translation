@@ -38,7 +38,6 @@ export default function Index() {
 
   const toBlur = () => {
     inputRef.current?.blur();
-    console.log("inputText", inputText);
     // 如果输入框为空，直接结束
     if (inputText === "") return;
     // 展示加载动画
@@ -46,6 +45,7 @@ export default function Index() {
     // 发送翻译请求
     setTranslation();
   };
+
 
 
   async function setTranslation() {
@@ -70,7 +70,6 @@ export default function Index() {
   }
 
   async function copyTextToClipboard(isTarget: boolean) {
-    console.log("copy");
     if (isTarget) {
       await Clipboard.setStringAsync(outputText);
     } else {
@@ -178,7 +177,7 @@ const styles = StyleSheet.create({
   },
   bodyContainer: {
     position: "relative",
-    height: height - 70,
+    height: height - 80,
     width: "100%",
     paddingVertical: 20,
     paddingBottom: 0,

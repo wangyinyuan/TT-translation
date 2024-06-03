@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
   bodyContainer: {
     position: "relative",
-    height: height - 70,
+    height: height - 80,
     width: "100%",
     paddingVertical: 20,
     backgroundColor: bg.page,
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
-    maxHeight: 70,
+    maxHeight: 80,
   },
   headerTextContainer: {
     position: "absolute",

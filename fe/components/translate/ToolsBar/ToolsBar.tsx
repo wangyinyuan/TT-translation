@@ -37,11 +37,10 @@ export default function ToolsBar({}: ToolsBarProps) {
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-      quality: 1,
+      quality: 0.2,
     });
 
     if (!result.canceled) {
-      console.log(result);
       setImgUrl(result.assets[0].uri);
       router.push("/(translate)/camera");
     }
@@ -50,11 +49,10 @@ export default function ToolsBar({}: ToolsBarProps) {
   const openCameraAsync = async () => {
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
-      quality: 1,
+      quality: 0.2,
     });
 
     if (!result.canceled) {
-      console.log(result);
       setImgUrl(result.assets[0].uri);
       router.push("/(translate)/camera");
     }

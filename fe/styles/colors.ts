@@ -13,6 +13,7 @@ export const bg = {
   red_200: "#fef0f0",
   red_600: "#dc2626",
   yellow_200: "#fff3cc",
+  black_700: "#2A2D37",
 };
 
 export const text = {

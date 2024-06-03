@@ -22,13 +22,12 @@ const styles = StyleSheet.create({
 export default function LangPicker() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isTarget, setIsTarget] = useState(false);
+  const storeLangs = useCurLangsStore((state) => state.langs);
   const [langs, setLangs] = useState<LangsChoice>({
     from: "auto",
     to: "EN",
   });
-
-  const setCurLangs = useCurLangsStore((state) => state.setLangs)
-
+  const setCurLangs = useCurLangsStore((state) => state.setLangs);
   const [recentLangs, setRecentLangs] = useState<LangsValue[]>(["EN"]);
   // 修改最近使用的语言
   const addLang = (lang: LangsValue) => {
@@ -63,13 +62,13 @@ export default function LangPicker() {
     }
 
     // 添加到最近使用的语言
-    if (lang !== 'auto') {
+    if (lang !== "auto") {
       addLang(lang);
     }
   }
 
   function handleExchange() {
-    if (langs.from === 'auto') return;
+    if (langs.from === "auto") return;
     setLangs((prev) => ({
       from: prev.to,
       to: prev.from as LangsValue,
@@ -79,7 +78,16 @@ export default function LangPicker() {
   // 同步到全局状态
   useEffect(() => {
     setCurLangs(langs);
-  }, [langs])
+  }, [langs]);
+
+  // 初始化上一次记忆的语言
+  useEffect(() => {
+    setLangs(storeLangs);
+    if (storeLangs.from !== "auto") {
+      addLang(storeLangs.from);
+    }
+    addLang(storeLangs.to);
+  }, [])
 
   return (
     <View className="flex flex-row items-center justify-around shrink w-full">
