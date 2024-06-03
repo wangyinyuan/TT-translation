@@ -29,6 +29,7 @@ export default function Index() {
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isVoiceResLoading, setIsVoiceResLoading] = useState(false);
   const inputRef = useRef<TextInput>(null);
   const langs = useCurLangsStore((state) => state.langs);
 
@@ -46,7 +47,17 @@ export default function Index() {
     setTranslation();
   };
 
+  useEffect(() => {
+    if (!inputText) return;
+    setIsLoading(true);
+    setTranslation();
+  }, [langs.from, langs.to])
 
+  useEffect(() => {
+    if (!inputText) {
+      setOutputText("");
+    }
+  }, [inputText]);
 
   async function setTranslation() {
     try {
@@ -55,7 +66,7 @@ export default function Index() {
         from: langs.from,
         to: langs.to,
       });
-      console.log(res);
+      setOutputText(res.translation);
     } catch (err) {
       console.error(err);
     } finally {
@@ -132,7 +143,11 @@ export default function Index() {
               cursorColor={bg.purple_400}
               maxLength={1000}
               multiline={true}
-              textAlignVertical="top"></TextInput>
+              textAlignVertical="top">
+              </TextInput>
+              <View style={styles.inputLoading}>
+              {isVoiceResLoading && <LoadingSkeleton></LoadingSkeleton>}
+              </View>
             <View style={styles.lengthHint}>
               {inputText.length > 0 && (
                 <Text style={styles.hintText}>{getTextLength()}/1000</Text>
@@ -159,11 +174,14 @@ export default function Index() {
               </IconBtn>
             </View>
           </View>
-          <ScrollView style={[styles.fullWidth]}>
+          <ScrollView style={[styles.fullWidth, styles.scrollViewStyle]} showsVerticalScrollIndicator={false}>
             {isLoading && <LoadingSkeleton></LoadingSkeleton>}
-            {/* <Text style={styles.textOutput}>Translations</Text> */}
+            {!isLoading && <Text style={styles.textOutput}>{outputText}</Text>}
           </ScrollView>
-          <ToolsBar />
+          <ToolsBar setInputText={(text) => setInputText(text) } setOutputText={(text) => setOutputText(text)} setIsLoading={(bool) => {
+            setIsVoiceResLoading(bool);
+            setIsLoading(bool);
+          }} />
         </View>
       </View>
     </View>
@@ -245,5 +263,10 @@ const styles = StyleSheet.create({
   },
   fullWidth: {
     width: "100%",
+  },
+  scrollViewStyle: {
+  },
+  inputLoading: {
+    position: "absolute",
   },
 });

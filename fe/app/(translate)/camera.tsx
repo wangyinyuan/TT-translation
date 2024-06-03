@@ -1,8 +1,10 @@
+import { getTranslation } from "@/apis/translate/getTranslation";
 import { ocrRequest } from "@/apis/translate/ocrRequest";
 import HeaderContainer from "@/components/global/HeaderContainer";
 import IconBtn from "@/components/global/IconBtn";
 import LangPicker from "@/components/global/LangPicker";
 import ScanningBar from "@/components/translate/ScanningBar/ScanningBar";
+import { toastConfig } from "@/constants/toastConfig";
 import { useCurLangsStore } from "@/stores/curLangsStore";
 import { useSelectedImageStore } from "@/stores/selectedImage";
 import { radiusBase } from "@/styles/base";
@@ -19,6 +21,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import Toast from "react-native-root-toast";
 
 const { height, width } = Dimensions.get("window");
 const bottomContainerHeight = 240;
@@ -33,34 +36,25 @@ export default function CameraView() {
   const imgUrl = useSelectedImageStore((state) => state.imgUrl);
   const langs = useCurLangsStore((state) => state.langs);
   const [isLoading, setIsLoading] = useState(true);
-  const [ocrText, setOcrText] = useState(
-    "在这个实现中，LinearGradient 用于创建从左到右的渐变效果。Animated.View 用于实现从左到右的动画效果。translateX 控制扫描条的水平移动。这样就可以实现一个从左到右的扫描动画，带有渐变效果。"
-  );
-  const [transText, setTransText] = useState(
-    "在这个实现中，LinearGradient 用于创建从左到右的渐变效果。Animated.View 用于实现从左到右的动画效果。translateX 控制扫描条的水平移动。这样就可以实现一个从左到右的扫描动画，带有渐变效果。"
-  );
+  const [ocrText, setOcrText] = useState("");
+  const [transText, setTransText] = useState("");
   const bottomHeight = useSharedValue(0);
   const innerHeight = useSharedValue(0);
 
   const recognizeTextFromImage = async () => {
     try {
+      let ocrText = "";
       const formData = createFormData(imgUrl);
       const res = await ocrRequest({ file: formData });
-      console.log(res);
       res.ParsedResults.forEach((result: any) => {
-        console.log(result.ParsedText);
+        ocrText += result.ParsedText;
       });
+      setOcrText(ocrText);
     } catch (err) {
-      console.error("OCR 识别出错: ", err);
+      Toast.show("OCR 识别出错", toastConfig.error);
     }
   };
 
-  // 测试动画用
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-  }, []);
 
   const animatedBottomStyle = useAnimatedStyle(() => {
     return {
@@ -95,19 +89,52 @@ export default function CameraView() {
     return formData;
   };
 
+  async function setTranslation() {
+    const res = await getTranslation({
+      text: ocrText,
+      from: langs.from,
+      to: langs.to,
+    })
+    setTransText(res.translation);
+    setIsLoading(false);
+  }
+
+  // 翻译文本
+  useEffect(() => {
+    if (!ocrText) return;
+    setTranslation();
+  }, [ocrText])
+
+  // 当选择语言的时候，重新翻译
+  useEffect(() => {
+    setIsLoading(true);
+    if (ocrText) {
+      setTranslation();
+    }
+  }, [langs.from, langs.to])
+
   const showBottomContainer = () => {
     bottomHeight.value = bottomContainerHeight;
     innerHeight.value = innerContainerHeight;
   };
 
+  const hideBottomContainer = () => {
+    bottomHeight.value = 0;
+    innerHeight.value = 0;
+  }
+
   useEffect(() => {
     if (!isLoading) {
       showBottomContainer();
+    } else {
+      hideBottomContainer();
     }
   }, [isLoading]);
 
   useEffect(() => {
-    // recognizeTextFromImage();
+    if (imgUrl) {
+      recognizeTextFromImage();
+    }
   }, [imgUrl]);
 
   return (

@@ -13,7 +13,7 @@ import Animated, {
 
 const DEFAULT_WIDTH = Dimensions.get("window").width - 100;
 const DEFAULT_HEIGHT = 25;
-const DEFAULT_TRACK_COLOR = bg.gray_100;
+const DEFAULT_TRACK_COLOR = bg.gray_200;
 const DEFAULT_HIGHLIGHT_COLOR = bg.green_100;
 const DEFAULT_RADIUS = radiusXs;
 const ANIMATION_DURATION = 1000;

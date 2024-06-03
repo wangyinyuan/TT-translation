@@ -10,6 +10,12 @@ interface GetTranslationParams {
 
 interface GetTranslationResponse {
   translation: string;
+  SourceSpeechResponse: {
+    audio: string;
+  };
+  TargetSpeechResponse: {
+    audio: string;
+  };
 }
 
 export const getTranslation = ({ text, from, to }: GetTranslationParams) => {

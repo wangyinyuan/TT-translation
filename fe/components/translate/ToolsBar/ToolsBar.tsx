@@ -1,7 +1,10 @@
+import { speechTranslationReq } from "@/apis/translate/speechTranslation";
 import IconBtn from "@/components/global/IconBtn";
+import { useCurLangsStore } from "@/stores/curLangsStore";
 import { useSelectedImageStore } from "@/stores/selectedImage";
 import { bg, text } from "@/styles/colors";
 import { FontAwesome, FontAwesome6 } from "@expo/vector-icons";
+import { Audio } from "expo-av";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
@@ -16,21 +19,27 @@ import Animated, {
 
 const voiceBtnAnimationDuration = 500;
 
-interface ToolsBarProps {}
+interface ToolsBarProps {
+  setInputText: (text: string) => void;
+  setOutputText: (text: string) => void;
+  setIsLoading: (bool: boolean) => void;
+}
 
 const AnimatedIconBtn = Animated.createAnimatedComponent(IconBtn);
 
-export default function ToolsBar({}: ToolsBarProps) {
+export default function ToolsBar({setInputText, setOutputText, setIsLoading}: ToolsBarProps) {
   const [isVoiceActive, setIsVoiceActive] = useState(false);
   const [isVoiceBack, setIsVoiceBack] = useState(true);
   const [cameraX, setCameraX] = useState(0);
   const [voiceX, setVoiceX] = useState(0);
+  const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const voiceBtnSize = useSharedValue<number>(52);
   const voiceBtnPosition = useSharedValue<number>(0);
   const voiceBtnColor = useSharedValue<number>(0);
   const cameraBtnRef = useRef<React.ElementRef<typeof IconBtn>>(null);
   const voiceBtnRef = useRef<React.ElementRef<typeof IconBtn>>(null);
   const setImgUrl = useSelectedImageStore((state) => state.setImgUrl);
+  const langs = useCurLangsStore((state) => state.langs);
 
   const transX = cameraX - voiceX;
 
@@ -76,8 +85,75 @@ export default function ToolsBar({}: ToolsBarProps) {
     }
   }, [cameraBtnRef, voiceBtnRef]);
 
+  async function startRecording() {
+    try {
+      const permission = await Audio.requestPermissionsAsync();
+
+      if (permission.status === 'granted') {
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: true,
+          playsInSilentModeIOS: true,
+        }); 
+        const recording = new Audio.Recording();
+        await recording.prepareToRecordAsync();
+        await recording.startAsync(); 
+        setRecording(recording);
+      } else {
+        console.log('Permission to access microphone denied');
+      }
+    } catch (err) {
+      console.error('Failed to start recording', err);
+    }
+  }
+
+  async function stopRecording() {
+    if (!recording) return;
+    try {
+      await recording.stopAndUnloadAsync();
+    } catch (error) {
+      
+    }
+    const uri = recording.getURI();
+    setRecording(null);
+
+    if (uri) {
+      const formData = new FormData();
+      // @ts-ignore
+      formData.append('file', {
+        uri,
+        name: 'recording.wav',
+        type: 'audio/wav'
+      });
+
+      // Send formData to server
+      try {
+        setIsLoading(true);
+        const res = await speechTranslationReq({
+          file: formData,
+          from: langs.from,
+          to: langs.to,
+        })
+        setInputText(res.recognition_result);
+        setOutputText(res.translation_result);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+    }
+  }
+
+
   function handleVoicePress() {
-    setIsVoiceActive((prev) => !prev);
+    if (isVoiceActive) {
+      // 关闭语音
+      setIsVoiceActive(false);
+      // 结束录音，发送请求
+      stopRecording();
+
+    } else {
+      setIsVoiceActive(true);
+      startRecording();
+    }
   }
 
   // 监听声音按钮是否被点击，应用动画
