@@ -13,10 +13,17 @@ import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 const { height, width } = Dimensions.get("window");
 const bottomContainerHeight = 240;
 const innerContainerHeight = bottomContainerHeight / 1.8;
+const heightAnimationDuration = 300;
 
 const placeHolderImg = `https://placehold.co/${Math.ceil(width + 10)}x${(
   height - 60
@@ -25,13 +32,15 @@ const placeHolderImg = `https://placehold.co/${Math.ceil(width + 10)}x${(
 export default function CameraView() {
   const imgUrl = useSelectedImageStore((state) => state.imgUrl);
   const langs = useCurLangsStore((state) => state.langs);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [ocrText, setOcrText] = useState(
     "在这个实现中，LinearGradient 用于创建从左到右的渐变效果。Animated.View 用于实现从左到右的动画效果。translateX 控制扫描条的水平移动。这样就可以实现一个从左到右的扫描动画，带有渐变效果。"
   );
   const [transText, setTransText] = useState(
     "在这个实现中，LinearGradient 用于创建从左到右的渐变效果。Animated.View 用于实现从左到右的动画效果。translateX 控制扫描条的水平移动。这样就可以实现一个从左到右的扫描动画，带有渐变效果。"
   );
+  const bottomHeight = useSharedValue(0);
+  const innerHeight = useSharedValue(0);
 
   const recognizeTextFromImage = async () => {
     try {
@@ -45,6 +54,31 @@ export default function CameraView() {
       console.error("OCR 识别出错: ", err);
     }
   };
+
+  // 测试动画用
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+  }, []);
+
+  const animatedBottomStyle = useAnimatedStyle(() => {
+    return {
+      height: withTiming(bottomHeight.value, {
+        duration: heightAnimationDuration,
+        easing: Easing.ease,
+      }),
+    };
+  });
+
+  const animatedInnerStyle = useAnimatedStyle(() => {
+    return {
+      height: withTiming(innerHeight.value, {
+        duration: heightAnimationDuration,
+        easing: Easing.ease,
+      }),
+    };
+  });
 
   const createFormData = (uri: string) => {
     const formData = new FormData();
@@ -60,6 +94,17 @@ export default function CameraView() {
 
     return formData;
   };
+
+  const showBottomContainer = () => {
+    bottomHeight.value = bottomContainerHeight;
+    innerHeight.value = innerContainerHeight;
+  };
+
+  useEffect(() => {
+    if (!isLoading) {
+      showBottomContainer();
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     // recognizeTextFromImage();
@@ -89,7 +134,8 @@ export default function CameraView() {
           source={imgUrl}
           style={styles.img}
           placeholder={placeHolderImg}></Image>
-        <View style={[styles.bottomFirstContainer]}>
+        <Animated.View
+          style={[styles.bottomFirstContainer, animatedBottomStyle]}>
           <View style={styles.bottomLayoutContainer}>
             <ScrollView
               style={styles.scrollViewStyle}
@@ -104,7 +150,7 @@ export default function CameraView() {
               />
             </IconBtn>
           </View>
-          <View style={[styles.innerContainer]}>
+          <Animated.View style={[styles.innerContainer, animatedInnerStyle]}>
             <View style={styles.bottomLayoutContainer}>
               <ScrollView
                 style={styles.scrollViewStyle}
@@ -121,8 +167,8 @@ export default function CameraView() {
                 />
               </IconBtn>
             </View>
-          </View>
-        </View>
+          </Animated.View>
+        </Animated.View>
       </View>
     </View>
   );
