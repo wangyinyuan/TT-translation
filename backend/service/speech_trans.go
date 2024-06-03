@@ -61,7 +61,7 @@ func organizeRequest(filepath string) (uint64, error) {
 		panic(err)
 	}
 	// 输出json格式的字符串回包
-	fmt.Printf("%s", response.ToJsonString())
+	// fmt.Printf("%s", response.ToJsonString())
 	return *response.Response.Data.TaskId, nil
 }
 
@@ -94,7 +94,7 @@ func organizeQuery(taskid uint64) (asr.DescribeTaskStatusResponse, error) {
 		return *response, err
 	}
 	// 输出json格式的字符串回包
-	fmt.Printf("%s", response.ToJsonString())
+	// fmt.Printf("%s", response.ToJsonString())
 	return *response, nil
 }
 
