@@ -1,10 +1,24 @@
-import { View } from 'react-native';
+import { bg } from '@/styles/colors';
+import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-export default function HeaderContainer({ children }: { children?: React.ReactNode}) {
+const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    top: 0,
+    zIndex: -1,
+  }
+})
+
+export default function HeaderContainer({ children, bgColor }: { children?: React.ReactNode; bgColor?: string}) {
   const insets = useSafeAreaInsets();
 
-  return <View className='w-full h-52 bg-[--bg-purple-500] px-4 flex flex-row' style={{paddingTop: insets.top}}>
+  const dynamicStyles = {
+    backgroundColor: bgColor || bg.purple_500,
+    paddingTop: insets.top,
+  }
+
+  return <View className='w-full h-52 px-4 flex-row' style={[dynamicStyles, styles.container]}>
     {children}
   </View>
 }
