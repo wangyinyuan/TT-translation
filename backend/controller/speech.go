@@ -108,8 +108,8 @@ func SpeechTranslateHandler(c *gin.Context) {
 	response := model.SpeechTranslationResponse{
 		RecognitionResult:    result,
 		TranslationResult:    translation,
-		SourceSpeechResponce: sourceSpeechResponse,
-		TargetSpeechResponce: targetSpeechResponse,
+		SourceSpeechResponse: sourceSpeechResponse,
+		TargetSpeechResponse: targetSpeechResponse,
 	}
 
 	// 将结果返回给前端

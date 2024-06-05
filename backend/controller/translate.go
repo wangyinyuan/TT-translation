@@ -42,8 +42,8 @@ func TranslateHandler(c *gin.Context) {
 	}
 	translateResponse := model.TranslateResponse{
 		Translation:          translation,
-		SourceSpeechResponce: sourceSpeechResponse,
-		TargetSpeechResponce: targetSpeechResponse,
+		SourceSpeechResponse: sourceSpeechResponse,
+		TargetSpeechResponse: targetSpeechResponse,
 	}
 
 	// 将翻译结果返回给前端
