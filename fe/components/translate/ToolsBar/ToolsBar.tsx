@@ -23,11 +23,12 @@ interface ToolsBarProps {
   setInputText: (text: string) => void;
   setOutputText: (text: string) => void;
   setIsLoading: (bool: boolean) => void;
+  loadAudio: (base64: string, isInput: boolean) => void;
 }
 
 const AnimatedIconBtn = Animated.createAnimatedComponent(IconBtn);
 
-export default function ToolsBar({setInputText, setOutputText, setIsLoading}: ToolsBarProps) {
+export default function ToolsBar({setInputText, setOutputText, setIsLoading, loadAudio}: ToolsBarProps) {
   const [isVoiceActive, setIsVoiceActive] = useState(false);
   const [isVoiceBack, setIsVoiceBack] = useState(true);
   const [cameraX, setCameraX] = useState(0);
@@ -127,15 +128,24 @@ export default function ToolsBar({setInputText, setOutputText, setIsLoading}: To
 
       // Send formData to server
       try {
+        // 清空输入输出文本
+        setInputText('');
+        setOutputText('');
         setIsLoading(true);
         const res = await speechTranslationReq({
           file: formData,
           from: langs.from,
           to: langs.to,
         })
+        setIsLoading(false);
         setInputText(res.recognition_result);
         setOutputText(res.translation_result);
-        setIsLoading(false);
+        if (res.SourceSpeechResponse.audio) {
+          await loadAudio(res.SourceSpeechResponse.audio, true);
+        }
+        if (res.TargetSpeechResponse.audio) {
+          await loadAudio(res.TargetSpeechResponse.audio, false);
+        }
       } catch (error) {
         console.error('Error uploading file:', error);
       }

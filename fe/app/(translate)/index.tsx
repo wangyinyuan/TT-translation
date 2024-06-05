@@ -8,8 +8,11 @@ import { langLabels } from "@/constants/langs";
 import { useCurLangsStore } from "@/stores/curLangsStore";
 import { radiusBase } from "@/styles/base";
 import { bg, text } from "@/styles/colors";
+import { getAudioFileName } from "@/utils/audio";
 import { AntDesign, Entypo, Feather, MaterialIcons } from "@expo/vector-icons";
+import { Audio } from "expo-av";
 import * as Clipboard from "expo-clipboard";
+import * as FileSystem from "expo-file-system";
 import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
@@ -25,16 +28,57 @@ import {
 
 const { height } = Dimensions.get("window");
 
+export async function getAudioUri(base64: string) {
+  // 如果文件存在，直接返回
+  const fileName = getAudioFileName(base64);
+  const uri = `${FileSystem.cacheDirectory}${fileName}`;
+  const { exists } = await FileSystem.getInfoAsync(uri);
+
+  if (exists) {
+    console.log("文件存在，直接返回文件, uri: ", uri);
+    return uri;
+  } else {
+    // 文件不存在，写入文件
+    await FileSystem.writeAsStringAsync(uri, base64, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+
+    return uri;
+  }
+}
+
 export default function Index() {
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isVoiceResLoading, setIsVoiceResLoading] = useState(false);
+  const [inputSound, setInputSound] = useState<Audio.Sound | null>(null);
+  const [outputSound, setOutputSound] = useState<Audio.Sound | null>(null);
   const inputRef = useRef<TextInput>(null);
   const langs = useCurLangsStore((state) => state.langs);
 
   function getTextLength() {
     return inputText.length;
+  }
+
+  async function loadAudio(base64: string, isInput?: boolean) {
+    const uri = await getAudioUri(base64);
+
+    if (isInput) {
+      try {
+        const { sound } = await Audio.Sound.createAsync({ uri });
+        setInputSound(sound);
+      } catch (e) {
+        console.error("输入音频载入失败", e);
+      }
+    } else {
+      try {
+        const { sound } = await Audio.Sound.createAsync({ uri });
+        setOutputSound(sound);
+      } catch (e) {
+        console.error("输出音频载入失败", e);
+      }
+    }
   }
 
   const toBlur = () => {
@@ -51,7 +95,7 @@ export default function Index() {
     if (!inputText) return;
     setIsLoading(true);
     setTranslation();
-  }, [langs.from, langs.to])
+  }, [langs.from, langs.to]);
 
   useEffect(() => {
     if (!inputText) {
@@ -67,6 +111,12 @@ export default function Index() {
         to: langs.to,
       });
       setOutputText(res.translation);
+      if (res.SourceSpeechResponse.audio) {
+        await loadAudio(res.SourceSpeechResponse.audio, true);
+      }
+      if (res.TargetSpeechResponse.audio) {
+        await loadAudio(res.TargetSpeechResponse.audio, false);
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -74,7 +124,6 @@ export default function Index() {
       setIsLoading(false);
     }
   }
-
 
   function clearAll() {
     setInputText("");
@@ -92,7 +141,7 @@ export default function Index() {
   useEffect(() => {
     const keyboardHideListener = Keyboard.addListener(
       "keyboardDidHide",
-      toBlur,
+      toBlur
     );
 
     return () => {
@@ -126,7 +175,13 @@ export default function Index() {
                 onPress={() => copyTextToClipboard(false)}>
                 <Feather name="copy" size={24} color={text.gray_800} />
               </IconBtn>
-              <IconBtn style={styles.iconBtn}>
+              <IconBtn
+                style={styles.iconBtn}
+                onPress={() => {
+                  if (inputSound) {
+                    inputSound.replayAsync();
+                  }
+                }}>
                 <AntDesign name="sound" size={24} color={text.gray_800} />
               </IconBtn>
               <IconBtn style={styles.iconBtn} onPress={() => clearAll()}>
@@ -143,11 +198,10 @@ export default function Index() {
               cursorColor={bg.purple_400}
               maxLength={1000}
               multiline={true}
-              textAlignVertical="top">
-              </TextInput>
-              <View style={styles.inputLoading}>
+              textAlignVertical="top"></TextInput>
+            <View style={styles.inputLoading}>
               {isVoiceResLoading && <LoadingSkeleton></LoadingSkeleton>}
-              </View>
+            </View>
             <View style={styles.lengthHint}>
               {inputText.length > 0 && (
                 <Text style={styles.hintText}>{getTextLength()}/1000</Text>
@@ -166,7 +220,13 @@ export default function Index() {
                 onPress={() => copyTextToClipboard(true)}>
                 <Feather name="copy" size={24} color={text.green_500} />
               </IconBtn>
-              <IconBtn style={styles.iconBtn}>
+              <IconBtn
+                style={styles.iconBtn}
+                onPress={() => {
+                  if (outputSound) {
+                    outputSound.replayAsync();
+                  }
+                }}>
                 <AntDesign name="sound" size={24} color={text.green_500} />
               </IconBtn>
               <IconBtn style={styles.iconBtn}>
@@ -174,14 +234,21 @@ export default function Index() {
               </IconBtn>
             </View>
           </View>
-          <ScrollView style={[styles.fullWidth, styles.scrollViewStyle]} showsVerticalScrollIndicator={false}>
+          <ScrollView
+            style={[styles.fullWidth, styles.scrollViewStyle]}
+            showsVerticalScrollIndicator={false}>
             {isLoading && <LoadingSkeleton></LoadingSkeleton>}
             {!isLoading && <Text style={styles.textOutput}>{outputText}</Text>}
           </ScrollView>
-          <ToolsBar setInputText={(text) => setInputText(text) } setOutputText={(text) => setOutputText(text)} setIsLoading={(bool) => {
-            setIsVoiceResLoading(bool);
-            setIsLoading(bool);
-          }} />
+          <ToolsBar
+            setInputText={(text) => setInputText(text)}
+            setOutputText={(text) => setOutputText(text)}
+            setIsLoading={(bool) => {
+              setIsVoiceResLoading(bool);
+              setIsLoading(bool);
+            }}
+            loadAudio={loadAudio}
+          />
         </View>
       </View>
     </View>
@@ -264,8 +331,7 @@ const styles = StyleSheet.create({
   fullWidth: {
     width: "100%",
   },
-  scrollViewStyle: {
-  },
+  scrollViewStyle: {},
   inputLoading: {
     position: "absolute",
   },
