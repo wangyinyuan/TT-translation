@@ -8,6 +8,6 @@ type TranslateRequest struct {
 
 type TranslateResponse struct {
 	Translation          string `json:"translation"`
-	SourceSpeechResponce TTSResponce
-	TargetSpeechResponce TTSResponce
+	SourceSpeechResponse TTSResponce
+	TargetSpeechResponse TTSResponce
 }
