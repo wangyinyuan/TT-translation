@@ -94,6 +94,7 @@ func organizeQuery(taskid uint64) (asr.DescribeTaskStatusResponse, error) {
 		return *response, err
 	}
 	// 输出json格式的字符串回包
+	// 打印调试
 	// fmt.Printf("%s", response.ToJsonString())
 	return *response, nil
 }

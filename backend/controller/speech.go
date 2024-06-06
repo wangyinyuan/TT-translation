@@ -36,8 +36,21 @@ func SpeechTranslateHandler(c *gin.Context) {
 	// 生成UUID作为文件名
 	fileName := uuid.New().String() + filepath.Ext(fileHeader.Filename)
 
+	// 定义uploads目录和文件路径
+	uploadsDir := "./uploads/"
+	filePath := filepath.Join(uploadsDir, fileName) // 使用filepath.Join来构建文件路径
+
+	// 检查uploads目录是否存在
+	if _, err := os.Stat(uploadsDir); os.IsNotExist(err) {
+		// 创建uploads目录
+		err = os.MkdirAll(uploadsDir, 0755) // 使用0755作为目录权限
+		if err != nil {
+			fmt.Println("创建uploads目录失败:", err)
+			return
+		}
+	}
+
 	// 创建文件用于存储上传的文件
-	filePath := "./uploads/" + fileName // 这里是临时存储目录，你需要提前创建它
 	f, err := os.Create(filePath)
 	if err != nil {
 		fmt.Println(err)
