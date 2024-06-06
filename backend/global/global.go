@@ -9,8 +9,9 @@ var (
 	GVA_CONFIG *config.Config
 )
 
-// LoadConfig 从文件中加载配置
+// LoadConfig 从配置文件中加载配置到GVA_CONFIG
 func LoadConfig() (*config.Config, error) {
+	// 调用 config 包的解析函数，从配置文件路径解析配置文件
 	var err error
 	GVA_CONFIG, err = config.LoadConfig("config/config.json")
 	if err != nil {

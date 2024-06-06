@@ -1,7 +1,6 @@
 package service
 
 import (
-	// "encoding/json"
 	"fmt"
 	"time"
 
@@ -15,7 +14,7 @@ import (
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
 )
 
-// convertAudioToBase64 将音频文件转换为Base64编码的字符串
+// 将音频文件转换为Base64编码的字符串
 func convertAudioToBase64(filePath string) (string, error) {
 	data, err := os.ReadFile(filePath)
 	if err != nil {
@@ -24,6 +23,7 @@ func convertAudioToBase64(filePath string) (string, error) {
 	return base64.StdEncoding.EncodeToString(data), nil
 }
 
+// 发送语音识别请求
 func organizeRequest(filepath string) (uint64, error) {
 	credential := common.NewCredential(
 		global.GVA_CONFIG.App.SecretID,
@@ -31,7 +31,6 @@ func organizeRequest(filepath string) (uint64, error) {
 	)
 	// 实例化一个client选项，可选的，没有特殊需求可以跳过
 	cpf := profile.NewClientProfile()
-	// cpf.HttpProfile.Endpoint = "asr.tencentcloudapi.com"
 	cpf.HttpProfile.Endpoint = global.GVA_CONFIG.Service.Speech.ASR
 	// 实例化要请求产品的client对象,clientProfile是可选的
 	client, _ := asr.NewClient(credential, "", cpf)
@@ -49,8 +48,10 @@ func organizeRequest(filepath string) (uint64, error) {
 		fmt.Printf("Error converting audio to Base64: %v\n", err)
 		return 0, err
 	}
+
 	// 打印 Base64 编码字符串的前 100 个字符，用于验证
-	fmt.Println(string(base64Audio[:100]))
+	// fmt.Println(string(base64Audio[:100]))
+
 	request.Data = common.StringPtr(base64Audio)
 
 	// 返回的resp是一个CreateRecTaskResponse的实例，与请求对象对应
@@ -62,11 +63,14 @@ func organizeRequest(filepath string) (uint64, error) {
 	if err != nil {
 		panic(err)
 	}
+
 	// 输出json格式的字符串回包
 	// fmt.Printf("%s", response.ToJsonString())
+
 	return *response.Response.Data.TaskId, nil
 }
 
+// 单次查询语音识别结果
 func organizeQuery(taskid uint64) (asr.DescribeTaskStatusResponse, error) {
 
 	credential := common.NewCredential(
@@ -76,7 +80,6 @@ func organizeQuery(taskid uint64) (asr.DescribeTaskStatusResponse, error) {
 
 	// 实例化一个client选项，可选的，没有特殊需求可以跳过
 	cpf := profile.NewClientProfile()
-	// cpf.HttpProfile.Endpoint = "asr.tencentcloudapi.com"
 	cpf.HttpProfile.Endpoint = global.GVA_CONFIG.Service.Speech.ASR
 	// 实例化要请求产品的client对象,clientProfile是可选的
 	client, _ := asr.NewClient(credential, "", cpf)
@@ -96,13 +99,15 @@ func organizeQuery(taskid uint64) (asr.DescribeTaskStatusResponse, error) {
 		fmt.Printf("err: %s", err)
 		return *response, err
 	}
+
 	// 输出json格式的字符串回包
 	// 打印调试
 	// fmt.Printf("%s", response.ToJsonString())
+
 	return *response, nil
 }
 
-// 轮询
+// 轮询语音识别结果
 func pollingRecognitionResult(taskID uint64, resultChan chan<- asr.DescribeTaskStatusResponse, errChan chan<- error) {
 
 	go func() {
@@ -135,6 +140,7 @@ func pollingRecognitionResult(taskID uint64, resultChan chan<- asr.DescribeTaskS
 	select {}
 }
 
+// 语音识别
 func OrganizeSpeech(filepath string) (asr.DescribeTaskStatusResponse, error) {
 	// 申请识别
 	taskid, err := organizeRequest(filepath)
@@ -144,7 +150,6 @@ func OrganizeSpeech(filepath string) (asr.DescribeTaskStatusResponse, error) {
 	}
 
 	// 轮询结果
-
 	resultChan := make(chan asr.DescribeTaskStatusResponse)
 	errChan := make(chan error)
 
