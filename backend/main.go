@@ -24,7 +24,7 @@ func main() {
 	// 设置路由
 	r.GET("/translate", controller.TranslateHandler)
 	r.POST("/speechTranslate", controller.SpeechTranslateHandler)
-	// r.GET("/text-to-speech", controller.TextToSpeechHandler)
+
 	// 启动服务器
 	r.Run("0.0.0.0:8080")
 }

@@ -17,7 +17,8 @@ func TextToSpeech(text string, sessionid string) (*tts.TextToVoiceResponse, erro
 	)
 	// 实例化一个client选项，可选的，没有特殊需求可以跳过
 	cpf := profile.NewClientProfile()
-	cpf.HttpProfile.Endpoint = "tts.tencentcloudapi.com"
+	// cpf.HttpProfile.Endpoint = "tts.tencentcloudapi.com"
+	cpf.HttpProfile.Endpoint = global.GVA_CONFIG.Service.Speech.TTS
 	// 实例化要请求产品的client对象,clientProfile是可选的
 	client, _ := tts.NewClient(credential, "ap-beijing", cpf)
 
@@ -37,6 +38,7 @@ func TextToSpeech(text string, sessionid string) (*tts.TextToVoiceResponse, erro
 		panic(err)
 	}
 	// 输出json格式的字符串回包
+	// 打印调试
 	// fmt.Printf("%s", response.ToJsonString())
 	return response, nil
 }
