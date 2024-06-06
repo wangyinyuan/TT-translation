@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"src/global"
 	"src/model"
 )
 
@@ -17,7 +18,8 @@ func Translate(translateReq model.TranslateRequest) (string, error) {
 	}
 
 	// 发送 POST 请求到 deeplx API
-	response, err := http.Post("https://api.deeplx.org/translate", "application/json", bytes.NewBuffer(requestBody))
+	// response, err := http.Post("https://api.deeplx.org/translate", "application/json", bytes.NewBuffer(requestBody))
+	response, err := http.Post(global.GVA_CONFIG.Service.Translate, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
 		return "", err
 	}

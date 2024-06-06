@@ -18,7 +18,12 @@ func LoadConfig() (*config.Config, error) {
 		//os.Exit(1)
 		return nil, err
 	}
-	fmt.Println("config in global:", GVA_CONFIG.App.SecretID)
-	fmt.Println("config in global:", GVA_CONFIG.App.SecretKey)
+
+	// 打印解析结果
+	fmt.Println("App SecretID in global:", GVA_CONFIG.App.SecretID)
+	fmt.Println("ASR Endpoint in global:", GVA_CONFIG.Service.Speech.ASR)
+	fmt.Println("TTS Endpoint in global:", GVA_CONFIG.Service.Speech.TTS)
+	fmt.Println("Translate Endpoint in global:", GVA_CONFIG.Service.Translate)
+
 	return GVA_CONFIG, nil
 }

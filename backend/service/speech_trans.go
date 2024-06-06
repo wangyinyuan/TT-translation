@@ -23,6 +23,7 @@ func convertAudioToBase64(filePath string) (string, error) {
 	}
 	return base64.StdEncoding.EncodeToString(data), nil
 }
+
 func organizeRequest(filepath string) (uint64, error) {
 	credential := common.NewCredential(
 		global.GVA_CONFIG.App.SecretID,
@@ -30,7 +31,8 @@ func organizeRequest(filepath string) (uint64, error) {
 	)
 	// 实例化一个client选项，可选的，没有特殊需求可以跳过
 	cpf := profile.NewClientProfile()
-	cpf.HttpProfile.Endpoint = "asr.tencentcloudapi.com"
+	// cpf.HttpProfile.Endpoint = "asr.tencentcloudapi.com"
+	cpf.HttpProfile.Endpoint = global.GVA_CONFIG.Service.Speech.ASR
 	// 实例化要请求产品的client对象,clientProfile是可选的
 	client, _ := asr.NewClient(credential, "", cpf)
 
@@ -74,7 +76,8 @@ func organizeQuery(taskid uint64) (asr.DescribeTaskStatusResponse, error) {
 
 	// 实例化一个client选项，可选的，没有特殊需求可以跳过
 	cpf := profile.NewClientProfile()
-	cpf.HttpProfile.Endpoint = "asr.tencentcloudapi.com"
+	// cpf.HttpProfile.Endpoint = "asr.tencentcloudapi.com"
+	cpf.HttpProfile.Endpoint = global.GVA_CONFIG.Service.Speech.ASR
 	// 实例化要请求产品的client对象,clientProfile是可选的
 	client, _ := asr.NewClient(credential, "", cpf)
 
