@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"src/controller"
 	"src/global"
 
@@ -9,14 +9,18 @@ import (
 )
 
 func main() {
-	//解析配置
+
+	// 初始化log前缀
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+
+	// 解析配置
 	_, err := global.LoadConfig()
 	if err != nil {
-		fmt.Println("resolve config error:", err)
+		log.Println("resolve config error:", err)
 	}
 	if err == nil {
 
-		fmt.Println("resolve config success")
+		log.Println("resolve config success")
 	}
 	// 创建 Gin 引擎
 	r := gin.Default()

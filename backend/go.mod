@@ -8,15 +8,7 @@ require (
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.933
 )
 
-require (
-	github.com/go-bindata/go-bindata/v3 v3.1.3 // indirect
-	github.com/google/go-cmp v0.6.0 // indirect
-	github.com/kisielk/errcheck v1.7.0 // indirect
-	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
-	golang.org/x/mod v0.18.0 // indirect
-	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/tools v0.22.0 // indirect
-)
+require github.com/google/go-cmp v0.6.0 // indirect
 
 require (
 	github.com/bytedance/sonic v1.9.1 // indirect

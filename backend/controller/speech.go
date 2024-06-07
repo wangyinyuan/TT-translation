@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -25,8 +25,8 @@ func SpeechTranslateHandler(c *gin.Context) {
 	// 解析前端发送过来的音频文件
 	file, fileHeader, err := c.Request.FormFile("file")
 	if err != nil {
-		fmt.Println("Error Retrieving the File")
-		fmt.Println(err)
+		log.Println("Error Retrieving the File")
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
 		return
 	}
@@ -44,7 +44,7 @@ func SpeechTranslateHandler(c *gin.Context) {
 		// 创建uploads目录
 		err = os.MkdirAll(uploadsDir, 0755) // 使用0755作为目录权限
 		if err != nil {
-			fmt.Println("创建uploads目录失败:", err)
+			log.Println("创建uploads目录失败:", err)
 			return
 		}
 	}
@@ -52,14 +52,14 @@ func SpeechTranslateHandler(c *gin.Context) {
 	// 创建文件用于存储上传的文件
 	f, err := os.Create(filePath)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 
 	defer func() {
 		// 确保在函数返回前删除临时文件
 		if err := os.Remove(filePath); err != nil {
-			fmt.Printf("Error removing temporary file %s: %v\n", filePath, err)
+			log.Printf("Error removing temporary file %s: %v\n", filePath, err)
 		}
 	}()
 
@@ -67,7 +67,7 @@ func SpeechTranslateHandler(c *gin.Context) {
 	// 将文件内容写入到临时文件中
 	_, err = io.Copy(f, file)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		os.Remove(filePath) // 删除文件，如果写入失败
 		return
 	}

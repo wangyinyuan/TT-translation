@@ -1,7 +1,7 @@
 package service
 
 import (
-	"fmt"
+	"log"
 	"src/global"
 
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
@@ -31,7 +31,7 @@ func TextToSpeech(text string, sessionid string) (*tts.TextToVoiceResponse, erro
 	// 返回的resp是一个TextToVoiceResponse的实例，与请求对象对应
 	response, err := client.TextToVoice(request)
 	if _, ok := err.(*errors.TencentCloudSDKError); ok {
-		fmt.Printf("An API error has returned: %s", err)
+		log.Printf("An API error has returned: %s", err)
 		return response, err
 	}
 	if err != nil {
@@ -40,7 +40,7 @@ func TextToSpeech(text string, sessionid string) (*tts.TextToVoiceResponse, erro
 
 	// 输出json格式的字符串回包
 	// 打印调试
-	// fmt.Printf("%s", response.ToJsonString())
+	// log.Printf("%s", response.ToJsonString())
 
 	return response, nil
 }

@@ -2,7 +2,7 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"os"
 )
 
@@ -42,10 +42,10 @@ func LoadConfig(filePath string) (*Config, error) {
 	}
 
 	// 打印配置信息
-	fmt.Println("App SecretID:", config.App.SecretID)
-	fmt.Println("ASR Endpoint:", config.Service.Speech.ASR)
-	fmt.Println("TTS Endpoint:", config.Service.Speech.TTS)
-	fmt.Println("Translate Endpoint:", config.Service.Translate)
+	log.Println("App SecretID:", config.App.SecretID)
+	log.Println("ASR Endpoint:", config.Service.Speech.ASR)
+	log.Println("TTS Endpoint:", config.Service.Speech.TTS)
+	log.Println("Translate Endpoint:", config.Service.Translate)
 
 	return &config, nil
 }
