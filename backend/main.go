@@ -1,10 +1,16 @@
 package main
 
 import (
+	"log"
+
 	"src/initialize"
 )
 
 func main() {
+
+	// 初始化log前缀
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+
 	//解析配置
 	initialize.SetupConfig()
 

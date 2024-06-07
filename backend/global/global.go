@@ -1,7 +1,7 @@
 package global
 
 import (
-	"fmt"
+	"log"
 	"src/config"
 )
 
@@ -15,16 +15,16 @@ func LoadConfig() (*config.Config, error) {
 	var err error
 	GVA_CONFIG, err = config.LoadConfig("config/config.json")
 	if err != nil {
-		fmt.Println("Error loading config:", err)
+		log.Println("Error loading config:", err)
 		//os.Exit(1)
 		return nil, err
 	}
 
 	// 打印解析结果
-	fmt.Println("App SecretID in global:", GVA_CONFIG.App.SecretID)
-	fmt.Println("ASR Endpoint in global:", GVA_CONFIG.Service.Speech.ASR)
-	fmt.Println("TTS Endpoint in global:", GVA_CONFIG.Service.Speech.TTS)
-	fmt.Println("Translate Endpoint in global:", GVA_CONFIG.Service.Translate)
+	log.Println("App SecretID in global:", GVA_CONFIG.App.SecretID)
+	log.Println("ASR Endpoint in global:", GVA_CONFIG.Service.Speech.ASR)
+	log.Println("TTS Endpoint in global:", GVA_CONFIG.Service.Speech.TTS)
+	log.Println("Translate Endpoint in global:", GVA_CONFIG.Service.Translate)
 
 	return GVA_CONFIG, nil
 }

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"fmt"
+	"log"
 	"time"
 
 	"encoding/base64"
@@ -45,19 +45,19 @@ func organizeRequest(filepath string) (uint64, error) {
 
 	base64Audio, err := convertAudioToBase64(filepath)
 	if err != nil {
-		fmt.Printf("Error converting audio to Base64: %v\n", err)
+		log.Printf("Error converting audio to Base64: %v\n", err)
 		return 0, err
 	}
 
 	// 打印 Base64 编码字符串的前 100 个字符，用于验证
-	// fmt.Println(string(base64Audio[:100]))
+	// log.Println(string(base64Audio[:100]))
 
 	request.Data = common.StringPtr(base64Audio)
 
 	// 返回的resp是一个CreateRecTaskResponse的实例，与请求对象对应
 	response, err := client.CreateRecTask(request)
 	if _, ok := err.(*errors.TencentCloudSDKError); ok {
-		fmt.Printf("An API error has returned: %s", err)
+		log.Printf("An API error has returned: %s", err)
 		return 0, err
 	}
 	if err != nil {
@@ -65,7 +65,7 @@ func organizeRequest(filepath string) (uint64, error) {
 	}
 
 	// 输出json格式的字符串回包
-	// fmt.Printf("%s", response.ToJsonString())
+	// log.Printf("%s", response.ToJsonString())
 
 	return *response.Response.Data.TaskId, nil
 }
@@ -92,17 +92,17 @@ func organizeQuery(taskid uint64) (asr.DescribeTaskStatusResponse, error) {
 	// 返回的resp是一个DescribeTaskStatusResponse的实例，与请求对象对应
 	response, err := client.DescribeTaskStatus(request)
 	if _, ok := err.(*errors.TencentCloudSDKError); ok {
-		fmt.Printf("An API error has returned: %s", err)
+		log.Printf("An API error has returned: %s", err)
 		return *response, err
 	}
 	if err != nil {
-		fmt.Printf("err: %s", err)
+		log.Printf("err: %s", err)
 		return *response, err
 	}
 
 	// 输出json格式的字符串回包
 	// 打印调试
-	// fmt.Printf("%s", response.ToJsonString())
+	// log.Printf("%s", response.ToJsonString())
 
 	return *response, nil
 }
@@ -115,20 +115,20 @@ func pollingRecognitionResult(taskID uint64, resultChan chan<- asr.DescribeTaskS
 		for {
 			resp, err := organizeQuery(taskID)
 			if err != nil {
-				fmt.Println("[Error] query:", err)
+				log.Println("[Error] query:", err)
 				// time.Sleep(interval)
 				errChan <- err
 				return
 			}
-			fmt.Printf("Task %d status: %d - %s\n", taskID, *resp.Response.Data.Status, *resp.Response.Data.Result)
+			log.Printf("Task %d status: %d - %s", taskID, *resp.Response.Data.Status, *resp.Response.Data.Result)
 
 			if *resp.Response.Data.Status == 2 {
-				fmt.Println("Task finished with status:success")
+				log.Println("Task finished with status:success")
 				resultChan <- resp
 				break // 退出轮询
 			}
 			if *resp.Response.Data.Status == 3 {
-				fmt.Printf("Task finished with status:failed \nerror message:%s", *resp.Response.Data.ErrorMsg)
+				log.Printf("Task finished with status:failed \nerror message:%s", *resp.Response.Data.ErrorMsg)
 				resultChan <- resp
 				break
 			}
@@ -145,7 +145,7 @@ func OrganizeSpeech(filepath string) (asr.DescribeTaskStatusResponse, error) {
 	// 申请识别
 	taskid, err := organizeRequest(filepath)
 	if err != nil {
-		fmt.Printf("err in organizeRequest: %s", err)
+		log.Printf("err in organizeRequest: %s", err)
 		return asr.DescribeTaskStatusResponse{}, err
 	}
 
@@ -160,11 +160,11 @@ func OrganizeSpeech(filepath string) (asr.DescribeTaskStatusResponse, error) {
 	select {
 	case result := <-resultChan:
 		// 处理成功的结果
-		fmt.Println("Received result:", result)
+		log.Println("Received result:", result)
 		return result, nil
 	case err := <-errChan:
 		// 处理错误
-		fmt.Println("Received error:", err)
+		log.Println("Received error:", err)
 		return asr.DescribeTaskStatusResponse{}, err
 	}
 }
