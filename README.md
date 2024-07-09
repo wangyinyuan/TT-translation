@@ -4,7 +4,7 @@
 
 ## 📱 UI 展示
 
-> TODO
+见[需求文档](https://github.com/wangyinyuan/TT-translation/blob/main/docs/request/request.md)
 
 ![3D动画](/docs/media/giphy2.gif)
 
